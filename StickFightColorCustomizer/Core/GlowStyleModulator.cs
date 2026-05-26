@@ -142,37 +142,12 @@ namespace StickFightColorCustomizer.Core
 
         public static string GetLabel(GlowStyleKind k)
         {
-            switch (k)
-            {
-                case GlowStyleKind.Pulse:     return "Pulse";
-                case GlowStyleKind.Rainbow:   return "Rainbow";
-                case GlowStyleKind.Flicker:   return "Flicker";
-                case GlowStyleKind.Trail:     return "Trail";
-                case GlowStyleKind.Heartbeat: return "Heartbeat";
-                case GlowStyleKind.Strobe:    return "Strobe";
-                case GlowStyleKind.Sunset:    return "Sunset";
-                case GlowStyleKind.Toxic:     return "Toxic";
-                case GlowStyleKind.Aurora:    return "Aurora";
-                default: return "Solid";
-            }
+            return MenuLocalization.GlowStyleLabel(k);
         }
 
         public static string GetTooltip(GlowStyleKind k)
         {
-            switch (k)
-            {
-                case GlowStyleKind.Solid:     return "Steady aura (default)";
-                case GlowStyleKind.Pulse:     return "Smooth breathing alpha";
-                case GlowStyleKind.Rainbow:   return "Hue cycles through spectrum";
-                case GlowStyleKind.Flicker:   return "Electric jitter";
-                case GlowStyleKind.Trail:     return "Wide comet pulse";
-                case GlowStyleKind.Heartbeat: return "Lub-dub double beat";
-                case GlowStyleKind.Strobe:    return "Fast flash (soft floor)";
-                case GlowStyleKind.Sunset:    return "Orange to pink-violet";
-                case GlowStyleKind.Toxic:     return "Green / amber glitch";
-                case GlowStyleKind.Aurora:    return "Green-cyan-violet waves";
-                default: return "";
-            }
+            return MenuLocalization.GlowStyleTooltip(k);
         }
 
         public static readonly GlowStyleKind[] ClassicStyles =

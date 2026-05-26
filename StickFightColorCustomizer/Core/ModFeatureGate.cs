@@ -138,56 +138,56 @@ namespace StickFightColorCustomizer.Core
         {
             if (config == null)
             {
-                return "Nada activo";
+                return MenuLocalization.T("feat_none");
             }
 
             var parts = new System.Collections.Generic.List<string>();
             if (IsBodyActive(config))
             {
-                parts.Add("Colores");
+                parts.Add(MenuLocalization.T("feat_colors"));
             }
 
             if (IsGlowActive(config))
             {
-                parts.Add("Glow");
+                parts.Add(MenuLocalization.T("feat_glow"));
             }
 
             if (IsHatActive(config))
             {
-                parts.Add("Sombrero");
+                parts.Add(MenuLocalization.T("feat_hat"));
             }
 
             if (IsShoeActive(config))
             {
-                parts.Add("Zapatos");
+                parts.Add(MenuLocalization.T("feat_shoes"));
             }
 
             if (IsTopsActive(config))
             {
-                parts.Add("Ropa");
+                parts.Add(MenuLocalization.T("feat_tops"));
             }
 
             if (IsObjectsActive(config))
             {
-                parts.Add("Objects");
+                parts.Add(MenuLocalization.T("feat_objects"));
             }
 
             if (IsWingActive(config))
             {
-                parts.Add("Alas");
+                parts.Add(MenuLocalization.T("feat_wings"));
             }
 
             if (IsWeaponActive(config))
             {
-                parts.Add("Armas");
+                parts.Add(MenuLocalization.T("feat_weapons"));
             }
 
             if (IsRgbActive(config))
             {
-                parts.Add("RGB");
+                parts.Add(MenuLocalization.T("feat_rgb"));
             }
 
-            return parts.Count > 0 ? string.Join(", ", parts.ToArray()) : "Nada activo (sin coste)";
+            return parts.Count > 0 ? string.Join(", ", parts.ToArray()) : MenuLocalization.T("feat_none");
         }
     }
 }

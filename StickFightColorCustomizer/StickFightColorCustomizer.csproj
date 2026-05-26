@@ -217,6 +217,7 @@
     <Compile Include="Core\WeaponPresets.cs" />
     <Compile Include="Core\StyleSlotStore.cs" />
     <Compile Include="Core\MenuLocalization.cs" />
+    <Compile Include="Core\MenuLocalization.Catalog.cs" />
 
     <Compile Include="Core\MaterialColorHelper.cs" />
     <Compile Include="Core\StickLineUtil.cs" />

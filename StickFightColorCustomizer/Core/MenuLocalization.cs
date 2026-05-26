@@ -4,7 +4,7 @@ using StickFightColorCustomizer.Hosting;
 
 namespace StickFightColorCustomizer.Core
 {
-    public static class MenuLocalization
+    public static partial class MenuLocalization
     {
         private static readonly Dictionary<string, string> English = new Dictionary<string, string>
         {
@@ -46,6 +46,8 @@ namespace StickFightColorCustomizer.Core
             { "language", "Menu language" },
             { "english", "English" },
             { "spanish", "Spanish" },
+            { "language_set_en", "Language: English" },
+            { "language_set_es", "Language: Spanish" },
             { "active", "Active" },
             { "save_config", "Save config (file)" },
             { "sync_lobby", "Sync lobby" },
@@ -136,6 +138,8 @@ namespace StickFightColorCustomizer.Core
             { "menu_smaller", "Smaller −" },
             { "menu_larger", "Larger +" },
             { "menu_reset_size", "Reset size" },
+            { "menu_half_size", "Half size (50%)" },
+            { "menu_half_applied", "Menu set to half size." },
             { "menu_size_hint", "Drag ◢ corner or use buttons. Saved in config." },
             { "mp_safe", "Vanilla-safe MP (recommended: no extra P2P packets)" },
             { "mp_safe_on", "Safe mode: vanilla compatible; sync between mods (Steam + ping)." },
@@ -170,7 +174,80 @@ namespace StickFightColorCustomizer.Core
             { "part_arm_l", "Arm L" },
             { "part_arm_r", "Arm R" },
             { "part_crown", "Crown" },
-            { "part_wings", "Wings" }
+            { "part_wings", "Wings" },
+            { "item_none", "None" },
+            { "wing_size", "Wing size" },
+            { "wing_color", "Wing color" },
+            { "wing_color_updated", "Wing color updated." },
+            { "glow_style_header", "Glow style" },
+            { "glow_style_hint", "Change aura motion without touching other settings." },
+            { "glow_active_label", "Active:" },
+            { "glow_classic_row", "Classic" },
+            { "glow_epic_row", "Epic" },
+            { "glow_style_set", "Glow style: {0}" },
+            { "feat_active_prefix", "Active:" },
+            { "feat_none", "Nothing active (no extra cost)" },
+            { "feat_colors", "Colors" },
+            { "feat_glow", "Glow" },
+            { "feat_hat", "Hat" },
+            { "feat_shoes", "Shoes" },
+            { "feat_tops", "Top" },
+            { "feat_objects", "Objects" },
+            { "feat_wings", "Wings" },
+            { "feat_weapons", "Weapons" },
+            { "feat_rgb", "RGB" },
+            { "sfcc_mods", "SFCC mods: {0} | pending: {1}" },
+            { "sfcc_last", "Last: {0}" },
+            { "body_sync_off", "Body sync OFF — enable body colors to publish sfcc." },
+            { "preset_applied", "Preset: {0}" },
+            { "weapon_preset_applied", "Weapon: {0}" },
+            { "selected_colon", "{0}: {1}" },
+            { "objects_coming_soon", "COMING SOON" },
+            { "objects_coming_soon_hint", "Objects preview only — not applied in-game yet." },
+            { "glow_style_solid", "Solid" },
+            { "glow_style_pulse", "Pulse" },
+            { "glow_style_rainbow", "Rainbow" },
+            { "glow_style_flicker", "Flicker" },
+            { "glow_style_trail", "Trail" },
+            { "glow_style_heartbeat", "Heartbeat" },
+            { "glow_style_strobe", "Strobe" },
+            { "glow_style_sunset", "Sunset" },
+            { "glow_style_toxic", "Toxic" },
+            { "glow_style_aurora", "Aurora" },
+            { "glow_tip_solid", "Steady aura (default)" },
+            { "glow_tip_pulse", "Smooth breathing alpha" },
+            { "glow_tip_rainbow", "Hue cycles through spectrum" },
+            { "glow_tip_flicker", "Electric jitter" },
+            { "glow_tip_trail", "Wide comet pulse" },
+            { "glow_tip_heartbeat", "Lub-dub double beat" },
+            { "glow_tip_strobe", "Fast flash (soft floor)" },
+            { "glow_tip_sunset", "Orange to pink-violet" },
+            { "glow_tip_toxic", "Green / amber glitch" },
+            { "glow_tip_aurora", "Green-cyan-violet waves" },
+            { "preset_Gold", "Gold" },
+            { "preset_Neon", "Neon" },
+            { "preset_Fire", "Fire" },
+            { "preset_Ice", "Ice" },
+            { "preset_Shadow", "Shadow" },
+            { "preset_Royal", "Royal" },
+            { "hat_cat_halo", "Halo" },
+            { "hat_cat_horn", "Horns" },
+            { "hat_cat_eye", "Eyes" },
+            { "hat_cat_visor", "Visors" },
+            { "hat_cat_crown", "Crowns" },
+            { "hat_cat_ear", "Ears" },
+            { "hat_cat_mark", "Marks" },
+            { "hat_cat_mask", "Masks" },
+            { "hat_cat_hair", "Hair" },
+            { "hat_cat_brow", "Brows" },
+            { "hat_cat_blush", "Blush" },
+            { "hat_cat_mohawk", "Mohawk" },
+            { "hat_cat_antenna", "Antenna" },
+            { "hat_cat_aura", "Aura" },
+            { "hat_cat_feather", "Feather" },
+            { "hat_cat_patch", "Eye patch" },
+            { "hat_cat_spike", "Spikes" },
+            { "hat_variant_num", "#{0}" }
         };
 
         private static readonly Dictionary<string, string> Spanish = new Dictionary<string, string>
@@ -213,6 +290,8 @@ namespace StickFightColorCustomizer.Core
             { "language", "Idioma del menú" },
             { "english", "Inglés" },
             { "spanish", "Español" },
+            { "language_set_en", "Idioma: inglés" },
+            { "language_set_es", "Idioma: español" },
             { "active", "Activo" },
             { "save_config", "Guardar config (archivo)" },
             { "sync_lobby", "Sincronizar lobby" },
@@ -303,6 +382,8 @@ namespace StickFightColorCustomizer.Core
             { "menu_smaller", "Más pequeña −" },
             { "menu_larger", "Más grande +" },
             { "menu_reset_size", "Tamaño por defecto" },
+            { "menu_half_size", "Mitad de tamaño (50%)" },
+            { "menu_half_applied", "Menú reducido a la mitad." },
             { "menu_size_hint", "Arrastra la esquina ◢ o usa los botones. Se guarda en config." },
             { "mp_safe", "MP compatible vanilla (recomendado: sin paquetes P2P extra)" },
             { "mp_safe_on", "Modo seguro: compatible vanilla; sync entre mods (Steam + ping)." },
@@ -337,8 +418,94 @@ namespace StickFightColorCustomizer.Core
             { "part_arm_l", "Brazo L" },
             { "part_arm_r", "Brazo R" },
             { "part_crown", "Corona" },
-            { "part_wings", "Alas" }
+            { "part_wings", "Alas" },
+            { "item_none", "Ninguno" },
+            { "wing_size", "Tamaño alas" },
+            { "wing_color", "Color alas" },
+            { "wing_color_updated", "Color de alas actualizado." },
+            { "glow_style_header", "Estilo glow" },
+            { "glow_style_hint", "Cambia el movimiento del aura sin tocar el resto." },
+            { "glow_active_label", "Activo:" },
+            { "glow_classic_row", "Clásicos" },
+            { "glow_epic_row", "Épicos" },
+            { "glow_style_set", "Estilo glow: {0}" },
+            { "feat_active_prefix", "Activo:" },
+            { "feat_none", "Nada activo (sin coste extra)" },
+            { "feat_colors", "Colores" },
+            { "feat_glow", "Glow" },
+            { "feat_hat", "Sombrero" },
+            { "feat_shoes", "Zapatos" },
+            { "feat_tops", "Ropa" },
+            { "feat_objects", "Objetos" },
+            { "feat_wings", "Alas" },
+            { "feat_weapons", "Armas" },
+            { "feat_rgb", "RGB" },
+            { "sfcc_mods", "Mods SFCC: {0} | pendientes: {1}" },
+            { "sfcc_last", "Último: {0}" },
+            { "body_sync_off", "Sync cuerpo OFF — activa colores de cuerpo para publicar sfcc." },
+            { "preset_applied", "Preset: {0}" },
+            { "weapon_preset_applied", "Arma: {0}" },
+            { "selected_colon", "{0}: {1}" },
+            { "objects_coming_soon", "PRÓXIMAMENTE" },
+            { "objects_coming_soon_hint", "Vista previa de objetos — aún no se aplican en partida." },
+            { "glow_style_solid", "Fijo" },
+            { "glow_style_pulse", "Pulso" },
+            { "glow_style_rainbow", "Arcoíris" },
+            { "glow_style_flicker", "Parpadeo" },
+            { "glow_style_trail", "Estela" },
+            { "glow_style_heartbeat", "Latido" },
+            { "glow_style_strobe", "Estroboscopio" },
+            { "glow_style_sunset", "Atardecer" },
+            { "glow_style_toxic", "Tóxico" },
+            { "glow_style_aurora", "Aurora" },
+            { "glow_tip_solid", "Aura fija (por defecto)" },
+            { "glow_tip_pulse", "Respiración suave de alpha" },
+            { "glow_tip_rainbow", "Ciclo de tonos en el espectro" },
+            { "glow_tip_flicker", "Vibración eléctrica" },
+            { "glow_tip_trail", "Pulso ancho tipo cometa" },
+            { "glow_tip_heartbeat", "Doble latido lub-dub" },
+            { "glow_tip_strobe", "Flash rápido (suelo suave)" },
+            { "glow_tip_sunset", "Naranja a rosa-violeta" },
+            { "glow_tip_toxic", "Glitch verde / ámbar" },
+            { "glow_tip_aurora", "Ondas verde-cian-violeta" },
+            { "preset_Gold", "Oro" },
+            { "preset_Neon", "Neón" },
+            { "preset_Fire", "Fuego" },
+            { "preset_Ice", "Hielo" },
+            { "preset_Shadow", "Sombra" },
+            { "preset_Royal", "Real" },
+            { "hat_cat_halo", "Halo" },
+            { "hat_cat_horn", "Cuernos" },
+            { "hat_cat_eye", "Ojos" },
+            { "hat_cat_visor", "Visores" },
+            { "hat_cat_crown", "Coronas" },
+            { "hat_cat_ear", "Orejas" },
+            { "hat_cat_mark", "Marcas" },
+            { "hat_cat_mask", "Máscaras" },
+            { "hat_cat_hair", "Pelo" },
+            { "hat_cat_brow", "Cejas" },
+            { "hat_cat_blush", "Rubor" },
+            { "hat_cat_mohawk", "Cresta" },
+            { "hat_cat_antenna", "Antena" },
+            { "hat_cat_aura", "Aura" },
+            { "hat_cat_feather", "Pluma" },
+            { "hat_cat_patch", "Parche ojo" },
+            { "hat_cat_spike", "Púas" },
+            { "hat_variant_num", "#{0}" }
         };
+
+        static MenuLocalization()
+        {
+            RegisterCatalogItems();
+        }
+
+        static partial void RegisterCatalogItems();
+
+        internal static void Register(string key, string english, string spanish)
+        {
+            English[key] = english;
+            Spanish[key] = spanish;
+        }
 
         public static void SetLanguage(MenuLanguage lang)
         {
@@ -365,6 +532,89 @@ namespace StickFightColorCustomizer.Core
             }
 
             return key;
+        }
+
+        public static string Tf(string key, params object[] args)
+        {
+            string format = T(key);
+            try
+            {
+                return string.Format(format, args);
+            }
+            catch
+            {
+                return format;
+            }
+        }
+
+        public static string ItemLabel(string itemId, string englishFallback)
+        {
+            if (string.IsNullOrEmpty(itemId))
+            {
+                return englishFallback ?? "";
+            }
+
+            string key = "item_" + itemId;
+            string value = T(key);
+            return value == key ? (englishFallback ?? itemId) : value;
+        }
+
+        public static string HatCategoryLabel(string categoryId, string englishFallback)
+        {
+            if (string.IsNullOrEmpty(categoryId))
+            {
+                return englishFallback ?? "";
+            }
+
+            string key = "hat_cat_" + categoryId;
+            string value = T(key);
+            return value == key ? (englishFallback ?? categoryId) : value;
+        }
+
+        public static string PresetLabel(string presetId)
+        {
+            if (string.IsNullOrEmpty(presetId))
+            {
+                return presetId;
+            }
+
+            string key = "preset_" + presetId;
+            string value = T(key);
+            return value == key ? presetId : value;
+        }
+
+        public static string GlowStyleLabel(Models.GlowStyleKind kind)
+        {
+            switch (kind)
+            {
+                case Models.GlowStyleKind.Pulse: return T("glow_style_pulse");
+                case Models.GlowStyleKind.Rainbow: return T("glow_style_rainbow");
+                case Models.GlowStyleKind.Flicker: return T("glow_style_flicker");
+                case Models.GlowStyleKind.Trail: return T("glow_style_trail");
+                case Models.GlowStyleKind.Heartbeat: return T("glow_style_heartbeat");
+                case Models.GlowStyleKind.Strobe: return T("glow_style_strobe");
+                case Models.GlowStyleKind.Sunset: return T("glow_style_sunset");
+                case Models.GlowStyleKind.Toxic: return T("glow_style_toxic");
+                case Models.GlowStyleKind.Aurora: return T("glow_style_aurora");
+                default: return T("glow_style_solid");
+            }
+        }
+
+        public static string GlowStyleTooltip(Models.GlowStyleKind kind)
+        {
+            switch (kind)
+            {
+                case Models.GlowStyleKind.Pulse: return T("glow_tip_pulse");
+                case Models.GlowStyleKind.Rainbow: return T("glow_tip_rainbow");
+                case Models.GlowStyleKind.Flicker: return T("glow_tip_flicker");
+                case Models.GlowStyleKind.Trail: return T("glow_tip_trail");
+                case Models.GlowStyleKind.Heartbeat: return T("glow_tip_heartbeat");
+                case Models.GlowStyleKind.Strobe: return T("glow_tip_strobe");
+                case Models.GlowStyleKind.Sunset: return T("glow_tip_sunset");
+                case Models.GlowStyleKind.Toxic: return T("glow_tip_toxic");
+                case Models.GlowStyleKind.Aurora: return T("glow_tip_aurora");
+                default: return T("glow_tip_solid");
+            }
         }
 
         public static string[] GetTabLabels()

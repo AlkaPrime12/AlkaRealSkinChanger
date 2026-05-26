@@ -164,7 +164,8 @@ namespace StickFightColorCustomizer.Core
             {
                 if (cat.VariantIds[i] == hatId)
                 {
-                    return cat.Label + " #" + (i + 1);
+                    string name = MenuLocalization.HatCategoryLabel(cat.CategoryId, cat.Label);
+                    return name + " " + MenuLocalization.Tf("hat_variant_num", i + 1);
                 }
             }
 

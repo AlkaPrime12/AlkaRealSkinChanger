@@ -491,11 +491,60 @@ namespace StickFightColorCustomizer.Core
                 inst.Root.transform.SetParent(parent, false);
             }
 
-            Vector3 anchor = ResolveWingAnchorLocal(inst.SpineAnchor, inst.SortLine, parent);
-            inst.LocalAnchorOffset = anchor;
-            inst.Root.transform.localPosition = anchor;
-            inst.Root.transform.localRotation = Quaternion.identity;
+            // The previous code set localPosition relative to the line transform — but the
+            // line transform doesn't follow the physics bones, only the LINE VERTICES do.
+            // Compute the chest world position from the spine vertices and set the wing root's
+            // world position directly, so the wings always appear stuck to the actual body.
+            Vector3 chestWorld;
+            if (TryComputeChestWorld(inst.SpineAnchor, inst.SortLine, out chestWorld))
+            {
+                inst.Root.transform.position = chestWorld;
+                inst.Root.transform.rotation = Quaternion.identity;
+                inst.LocalAnchorOffset = inst.Root.transform.localPosition;
+            }
+            else
+            {
+                Vector3 anchor = ResolveWingAnchorLocal(inst.SpineAnchor, inst.SortLine, parent);
+                inst.LocalAnchorOffset = anchor;
+                inst.Root.transform.localPosition = anchor;
+                inst.Root.transform.localRotation = Quaternion.identity;
+            }
+
             CopyLineStyleFromSpine(inst.Root.transform, inst.SortLine);
+        }
+
+        /// <summary>Average world position of spine/torso/hip line vertices = chest centre.</summary>
+        private static bool TryComputeChestWorld(Transform spineAnchor, LineRenderer sortLine, out Vector3 world)
+        {
+            world = Vector3.zero;
+            Vector3 sum = Vector3.zero;
+            int count = 0;
+
+            if (sortLine != null)
+            {
+                int vc = StickLineUtil.GetVertexCount(sortLine);
+                for (int i = 0; i < vc; i++) sum += StickLineUtil.GetVertexWorld(sortLine, i);
+                count += vc;
+            }
+
+            if (spineAnchor != null)
+            {
+                LineRenderer[] lines = spineAnchor.GetComponentsInChildren<LineRenderer>(true);
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    LineRenderer l = lines[i];
+                    if (l == null || l == sortLine) continue;
+                    if (l.gameObject.name.StartsWith("SFCC_")) continue;
+                    int vc = StickLineUtil.GetVertexCount(l);
+                    for (int v = 0; v < vc; v++) sum += StickLineUtil.GetVertexWorld(l, v);
+                    count += vc;
+                    if (count >= 4) break;
+                }
+            }
+
+            if (count == 0) return false;
+            world = sum / count;
+            return true;
         }
 
         private static void MarkAnchorSynced(int controllerInstanceId)

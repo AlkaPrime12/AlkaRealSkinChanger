@@ -23,7 +23,28 @@ namespace StickFightColorCustomizer.Core
             new TopsCatalogEntry { Id = "tuxedo",       Label = "Tuxedo" },
             new TopsCatalogEntry { Id = "clown",        Label = "Clown Suit" },
             new TopsCatalogEntry { Id = "neon",         Label = "Neon Cyber" },
-            new TopsCatalogEntry { Id = "varsity",      Label = "Varsity Bomber" }
+            new TopsCatalogEntry { Id = "varsity",      Label = "Varsity Bomber" },
+            // ── 20 new tops (hyper-detailed) ──
+            new TopsCatalogEntry { Id = "tx_lava",       Label = "Lava Tee" },
+            new TopsCatalogEntry { Id = "tx_galaxy",     Label = "Galaxy Print" },
+            new TopsCatalogEntry { Id = "tx_camo",       Label = "Camo Field" },
+            new TopsCatalogEntry { Id = "tx_pirate",     Label = "Pirate Coat" },
+            new TopsCatalogEntry { Id = "tx_knight",     Label = "Knight Plate" },
+            new TopsCatalogEntry { Id = "tx_ninja",      Label = "Ninja Gi" },
+            new TopsCatalogEntry { Id = "tx_pharaoh",    Label = "Pharaoh Robe" },
+            new TopsCatalogEntry { Id = "tx_robot",      Label = "Robot Chassis" },
+            new TopsCatalogEntry { Id = "tx_skeleton",   Label = "Skeleton Print" },
+            new TopsCatalogEntry { Id = "tx_lab",        Label = "Lab Coat" },
+            new TopsCatalogEntry { Id = "tx_track",      Label = "Track Suit" },
+            new TopsCatalogEntry { Id = "tx_kimono",     Label = "Kimono" },
+            new TopsCatalogEntry { Id = "tx_punk",       Label = "Punk Vest" },
+            new TopsCatalogEntry { Id = "tx_gradient",   Label = "Gradient Pop" },
+            new TopsCatalogEntry { Id = "tx_streetwear", Label = "Streetwear" },
+            new TopsCatalogEntry { Id = "tx_holiday",    Label = "Holiday Sweater" },
+            new TopsCatalogEntry { Id = "tx_racer",      Label = "Race Suit" },
+            new TopsCatalogEntry { Id = "tx_priest",     Label = "Cleric Robe" },
+            new TopsCatalogEntry { Id = "tx_chef",       Label = "Chef Apron" },
+            new TopsCatalogEntry { Id = "tx_diver",      Label = "Wetsuit" }
         };
 
         public static bool IsValid(string id)

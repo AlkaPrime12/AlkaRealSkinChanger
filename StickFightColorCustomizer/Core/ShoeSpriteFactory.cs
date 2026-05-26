@@ -188,8 +188,187 @@ namespace StickFightColorCustomizer.Core
                 case "slim_arctic":  return BuildSlimArctic();
                 case "slim_rider":   return BuildSlimRider();
                 case "slim_chelsea": return BuildSlimChelsea();
+                // ── 20 nuevos builders compactos ──
+                case "sh_loafer":     return BuildLowShoe(BrownHi, BrownLo, BlackLo, 28, false);
+                case "sh_oxford":     return BuildOxford();
+                case "sh_moccasin":   return BuildLowShoe(BrownHi, BrownLo, BrownLo, 28, false);
+                case "sh_court":      return BuildLowShoe(WhiteHi, WhiteLo, RedHi,   30, true);
+                case "sh_kicks_red":  return BuildLowShoe(RedHi, RedLo, WhiteHi, 30, true);
+                case "sh_kicks_blue": return BuildLowShoe(BlueHi, BlueLo, WhiteHi, 30, true);
+                case "sh_kicks_pink": return BuildLowShoe(new Color(1f, 0.45f, 0.78f, 1f), new Color(0.78f, 0.20f, 0.55f, 1f), WhiteHi, 30, true);
+                case "sh_chelsea":    return BuildLowShoe(BlackHi, BlackLo, BlackLo, 28, false);
+                case "sh_ballet":     return BuildLowShoe(new Color(0.95f, 0.85f, 0.85f, 1f), new Color(0.78f, 0.58f, 0.60f, 1f), RedLo, 26, false);
+                case "sh_geta":       return BuildGeta(BrownHi, BrownLo, WhiteHi);
+                case "sh_iceskate":   return BuildIceSkate();
+                case "sh_snowboot":   return BuildSnowBoot();
+                case "sh_rainboot":   return BuildRainBoot(YellowHi, new Color(0.85f, 0.65f, 0.10f, 1f));
+                case "sh_flipflop":   return BuildFlipFlop();
+                case "sh_clog":       return BuildClog();
+                case "sh_platform":   return BuildPlatform();
+                case "sh_skater":     return BuildLowShoe(BlackHi, BlackLo, WhiteHi, 32, true);
+                case "sh_canvas":     return BuildLowShoe(GreenHi, GreenLo, WhiteHi, 30, true);
+                case "sh_geta_blue":  return BuildGeta(BlueHi, BlueLo, WhiteHi);
+                case "sh_winged":     return BuildWingedBoot();
                 default: return BuildSneakers();
             }
+        }
+
+        // ── 20 small-footprint helpers (each one fits the same canvas pattern) ─────
+
+        private static Sprite BuildLowShoe(Color upper, Color upperLo, Color soleColor, int width, bool laces)
+        {
+            int w = Mathf.Clamp(width, 24, 34), h = 10;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 1, 1, w - 2, 3, soleColor);
+            FillRect(tex, 1, 1, w - 2, 1, BlackLo);
+            FillRect(tex, 2, 3, w - 3, 8, upper);
+            FillRect(tex, 2, 3, w - 3, 4, upperLo);
+            FillEllipse(tex, w - 5, 5.5f, 4f, 3f, upper);
+            if (laces)
+            {
+                for (int x = 7; x < w - 8; x += 3) tex.SetPixel(x, 6, WhiteHi);
+                FillRect(tex, 6, 8, w - 8, 9, upperLo);
+            }
+            DrawOutline(tex, 2, 1, w - 3, 8);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildOxford()
+        {
+            const int w = 30, h = 11;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 1, 1, w - 2, 3, BlackLo);
+            FillRect(tex, 2, 3, w - 3, 9, BrownHi);
+            FillRect(tex, 2, 3, w - 3, 4, BrownLo);
+            FillRect(tex, 5, 7, w - 7, 8, BlackLo);
+            for (int x = 6; x < w - 8; x += 3) tex.SetPixel(x, 6, YellowHi);
+            for (int x = 8; x < w - 9; x += 2) tex.SetPixel(x, 8, WhiteHi);
+            FillEllipse(tex, w - 5, 5.5f, 3.5f, 3f, BrownHi);
+            DrawOutline(tex, 2, 1, w - 3, 9);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildGeta(Color top, Color botColor, Color strap)
+        {
+            const int w = 28, h = 10;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 2, 1, w - 3, 4, top);
+            FillRect(tex, 2, 1, w - 3, 2, BlackLo);
+            FillRect(tex, 5, 0, 7, 1, botColor);
+            FillRect(tex, w - 7, 0, w - 5, 1, botColor);
+            tex.SetPixel(w / 2, 4, strap);
+            tex.SetPixel(w / 2 - 1, 5, strap); tex.SetPixel(w / 2 + 1, 5, strap);
+            tex.SetPixel(w / 2 - 2, 6, strap); tex.SetPixel(w / 2 + 2, 6, strap);
+            tex.SetPixel(w / 2 - 3, 7, strap); tex.SetPixel(w / 2 + 3, 7, strap);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildIceSkate()
+        {
+            const int w = 30, h = 14;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 4, 0, w - 5, 0, BlackHi);
+            FillRect(tex, 4, 1, w - 5, 1, GrayHi);
+            FillRect(tex, 4, 2, w - 5, 2, WhiteHi);
+            FillRect(tex, 3, 3, w - 4, 12, WhiteHi);
+            FillRect(tex, 3, 3, w - 4, 4, GrayLo);
+            for (int y = 6; y <= 11; y++) tex.SetPixel(w / 2, y, BlackLo);
+            for (int y = 6; y <= 11; y += 2) tex.SetPixel(w / 2 + 2, y, GrayLo);
+            FillEllipse(tex, w - 5, 6f, 3.5f, 3f, GrayHi);
+            DrawOutline(tex, 3, 0, w - 4, 12);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildSnowBoot()
+        {
+            const int w = 26, h = 14;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 1, 1, w - 2, 4, BlackHi);
+            FillRect(tex, 2, 4, w - 3, 11, GrayHi);
+            FillRect(tex, 2, 4, w - 3, 5, GrayLo);
+            FillRect(tex, 2, 11, w - 3, 13, WhiteHi);
+            FillRect(tex, w / 2 - 1, 12, w / 2 + 1, 13, BlackLo);
+            DrawOutline(tex, 2, 1, w - 3, 11);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildRainBoot(Color shellHi, Color shellLo)
+        {
+            const int w = 26, h = 14;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 1, 1, w - 2, 3, BlackHi);
+            FillRect(tex, 2, 3, w - 3, 12, shellHi);
+            FillRect(tex, 2, 3, w - 3, 5, shellLo);
+            FillRect(tex, 4, 7, 5, 11, WhiteHi);
+            FillRect(tex, 2, 12, w - 3, 13, shellLo);
+            DrawOutline(tex, 2, 1, w - 3, 12);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildFlipFlop()
+        {
+            const int w = 26, h = 7;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 2, 1, w - 3, 3, new Color(0.85f, 0.55f, 0.20f, 1f));
+            FillRect(tex, 2, 1, w - 3, 1, new Color(0.55f, 0.32f, 0.10f, 1f));
+            tex.SetPixel(w / 2, 3, BlackHi);
+            tex.SetPixel(w / 2 - 2, 4, BlackHi); tex.SetPixel(w / 2 + 2, 4, BlackHi);
+            tex.SetPixel(w / 2 - 4, 5, BlackHi); tex.SetPixel(w / 2 + 4, 5, BlackHi);
+            tex.SetPixel(w / 2 - 5, 6, BlackHi); tex.SetPixel(w / 2 + 5, 6, BlackHi);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildClog()
+        {
+            const int w = 26, h = 10;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 1, 1, w - 2, 3, BrownLo);
+            FillRect(tex, 1, 2, w - 2, 3, BrownHi);
+            FillRect(tex, 4, 3, w - 5, 9, RedHi);
+            FillRect(tex, 4, 3, w - 5, 4, RedLo);
+            FillRect(tex, 5, 6, w - 6, 7, WhiteHi);
+            DrawOutline(tex, 4, 1, w - 5, 9);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildPlatform()
+        {
+            const int w = 28, h = 14;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 1, 1, w - 2, 6, WhiteHi);
+            FillRect(tex, 1, 1, w - 2, 2, GrayLo);
+            FillRect(tex, 3, 6, w - 4, 12, BlackHi);
+            FillRect(tex, 3, 6, w - 4, 7, BlackLo);
+            for (int x = 7; x < w - 8; x += 3) tex.SetPixel(x, 9, WhiteHi);
+            DrawOutline(tex, 3, 1, w - 4, 12);
+            return Finish(tex, w, h);
+        }
+
+        private static Sprite BuildWingedBoot()
+        {
+            const int w = 28, h = 12;
+            Texture2D tex = NewTex(w, h);
+            FillRect(tex, 2, 0, w - 3, 1, Shadow);
+            FillRect(tex, 1, 1, w - 2, 3, BlackLo);
+            FillRect(tex, 2, 3, w - 3, 10, BrownHi);
+            FillRect(tex, 2, 3, w - 3, 4, BrownLo);
+            FillEllipse(tex, w - 5, 6f, 3.5f, 2.5f, BrownHi);
+            for (int t = 0; t < 5; t++)
+            {
+                int xx = 4 + t, yy = 9 + t / 2;
+                if (yy < h) tex.SetPixel(xx, yy, WhiteHi);
+            }
+            tex.SetPixel(3, 8, WhiteHi); tex.SetPixel(3, 10, WhiteHi);
+            DrawOutline(tex, 2, 1, w - 3, 10);
+            return Finish(tex, w, h);
         }
 
         // ── Slim line: mismo tamaño que sneakers (no botas altas/estrechas) ─────

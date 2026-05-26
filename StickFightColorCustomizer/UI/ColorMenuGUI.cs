@@ -12,11 +12,23 @@ namespace StickFightColorCustomizer.UI
     {
         private readonly Hosting.ColorCustomizerApp _mod;
         private Rect _windowRect = new Rect(50f, 40f, 540f, 680f);
-        private bool _resizingMenu;
-        private const float MenuMinWidth = 380f;
-        private const float MenuMinHeight = 500f;
-        private const float MenuMaxWidth = 920f;
-        private const float MenuMaxHeight = 950f;
+        private bool _resizingMenu;        // legacy flag — kept for the old SE-only path
+        private ResizeEdge _resizeEdge = ResizeEdge.None;
+        private Vector2 _resizeStartMouseScreen;
+        private Rect _resizeStartRect;
+        // Lowered so users on tiny resolutions (720p, 800×600, etc.) can shrink the
+        // window down enough that it doesn't cover the play area.
+        private const float MenuMinWidth = 260f;
+        private const float MenuMinHeight = 240f;
+        private const float MenuMaxWidth = 1400f;
+        private const float MenuMaxHeight = 1100f;
+        private const float DefaultMenuWidth = 540f;
+        private const float DefaultMenuHeight = 680f;
+        private const float ResizeBorder = 8f;
+        private const float ResizeCornerSize = 14f;
+        private const int ResizeHotControlId = 947210;
+
+        private enum ResizeEdge { None, N, S, E, W, NE, NW, SE, SW }
         private Vector2 _scroll;
         private int _tab;
         private int _selectedPart;
@@ -26,7 +38,6 @@ namespace StickFightColorCustomizer.UI
         private string _statusMessage = "";
         private string _exportCode = "";
         private string _importCode = "";
-        private const string ModCredit = ModBranding.CreditLine;
 
         private readonly HexFieldState _hexBodyField = new HexFieldState();
         private readonly HexFieldState _hexGlowField = new HexFieldState();
@@ -76,14 +87,180 @@ namespace StickFightColorCustomizer.UI
 
             ColorMenuTheme.Ensure();
             GUI.skin = null;
-            ApplyWindowSizeFromConfig();
+
+            // Only sync from config when we're NOT currently dragging an edge. Otherwise
+            // the per-frame config read wipes the in-progress resize between MouseDrag
+            // events (which only fire when the mouse actually moves), so the menu snaps
+            // back to the saved size every other frame and the user can't shrink it.
+            if (_resizeEdge == ResizeEdge.None)
+            {
+                ApplyWindowSizeFromConfig();
+            }
+
+            // RESIZE FIRST — we have to claim mouse events BEFORE GUI.Window draws and
+            // potentially consumes them via DragWindow / interior controls. Otherwise
+            // MouseDown on the edges never reaches us.
+            HandleEdgeResize();
+
+            // Safety floor: never let the rect collapse below the min, even if config
+            // is corrupted or ClampWindowToScreen squeezed too hard last frame.
+            if (_windowRect.width  < MenuMinWidth)  _windowRect.width  = MenuMinWidth;
+            if (_windowRect.height < MenuMinHeight) _windowRect.height = MenuMinHeight;
+
             _windowRect = GUI.Window(94721, _windowRect, DrawWindow, ModBranding.WindowTitle, ColorMenuTheme.Window);
-            if (_resizingMenu && Event.current.type == EventType.MouseUp)
+
+            // While dragging, save every frame too, so any code path that reads config
+            // mid-drag sees the live size (and so a crash mid-drag doesn't lose the size).
+            if (_resizeEdge != ResizeEdge.None) PersistWindowSize();
+
+            if ((_resizingMenu || _resizeEdge != ResizeEdge.None) && Event.current.type == EventType.MouseUp)
             {
                 _resizingMenu = false;
+                _resizeEdge = ResizeEdge.None;
                 PersistWindowSize();
             }
+
+            // Keep the window on-screen at all times — important on small resolutions.
+            // Skip while actively dragging so a fast drag past an edge doesn't get clamped
+            // away from the cursor mid-motion.
+            if (_resizeEdge == ResizeEdge.None) ClampWindowToScreen();
         }
+
+        private void ClampWindowToScreen()
+        {
+            float sw = Screen.width;
+            float sh = Screen.height;
+            if (sw < 1 || sh < 1) return;
+
+            // If the user shrunk the resolution below our min, fall back to ¾ of the screen.
+            _windowRect.width  = Mathf.Min(_windowRect.width,  sw - 8f);
+            _windowRect.height = Mathf.Min(_windowRect.height, sh - 8f);
+
+            _windowRect.x = Mathf.Clamp(_windowRect.x, 0f, sw - _windowRect.width);
+            _windowRect.y = Mathf.Clamp(_windowRect.y, 0f, sh - _windowRect.height);
+        }
+
+        private void HandleEdgeResize()
+        {
+            Event e = Event.current;
+            if (e == null) return;
+
+            // Mouse pos in screen-pixel coords (Y same as Rect — top-down in IMGUI).
+            Vector2 mouse = e.mousePosition;
+            ResizeEdge hover = DetectResizeEdgeAt(mouse);
+
+            // Set the OS-like resize cursor while hovering, BEFORE any drag starts.
+            if (_resizeEdge == ResizeEdge.None && hover != ResizeEdge.None)
+            {
+                EditorCursorLike(hover);
+            }
+
+            switch (e.type)
+            {
+                case EventType.MouseDown when hover != ResizeEdge.None:
+                    _resizeEdge = hover;
+                    _resizeStartMouseScreen = mouse;
+                    _resizeStartRect = _windowRect;
+                    // Grab hotControl so MouseDrag/MouseUp events keep flowing to us even
+                    // when the cursor leaves the resize hit-zone or any window.
+                    GUIUtility.hotControl = ResizeHotControlId;
+                    e.Use();
+                    break;
+
+                case EventType.MouseDrag when _resizeEdge != ResizeEdge.None:
+                    ApplyEdgeDrag(_resizeEdge, mouse - _resizeStartMouseScreen);
+                    e.Use();
+                    break;
+
+                case EventType.MouseUp when _resizeEdge != ResizeEdge.None:
+                    _resizeEdge = ResizeEdge.None;
+                    if (GUIUtility.hotControl == ResizeHotControlId) GUIUtility.hotControl = 0;
+                    PersistWindowSize();
+                    e.Use();
+                    break;
+            }
+        }
+
+        private ResizeEdge DetectResizeEdgeAt(Vector2 screenMouse)
+        {
+            float left   = _windowRect.x;
+            float right  = _windowRect.x + _windowRect.width;
+            float top    = _windowRect.y;
+            float bottom = _windowRect.y + _windowRect.height;
+            float mx = screenMouse.x, my = screenMouse.y;
+
+            bool nearL = mx >= left - 2f          && mx <= left + ResizeBorder;
+            bool nearR = mx >= right - ResizeBorder && mx <= right + 2f;
+            bool nearT = my >= top - 2f           && my <= top + ResizeBorder;
+            bool nearB = my >= bottom - ResizeBorder && my <= bottom + 2f;
+
+            // Need to be inside (or near) the window box overall.
+            bool insideX = mx >= left - 2f && mx <= right + 2f;
+            bool insideY = my >= top  - 2f && my <= bottom + 2f;
+            if (!insideX || !insideY) return ResizeEdge.None;
+
+            // Larger corner zones win over single edges.
+            bool corL = mx <= left + ResizeCornerSize;
+            bool corR = mx >= right - ResizeCornerSize;
+            bool corT = my <= top + ResizeCornerSize;
+            bool corB = my >= bottom - ResizeCornerSize;
+
+            if (nearT && corL) return ResizeEdge.NW;
+            if (nearT && corR) return ResizeEdge.NE;
+            if (nearB && corL) return ResizeEdge.SW;
+            if (nearB && corR) return ResizeEdge.SE;
+            if (nearL) return ResizeEdge.W;
+            if (nearR) return ResizeEdge.E;
+            if (nearT) return ResizeEdge.N;
+            if (nearB) return ResizeEdge.S;
+            return ResizeEdge.None;
+        }
+
+        private void ApplyEdgeDrag(ResizeEdge edge, Vector2 delta)
+        {
+            float x0 = _resizeStartRect.x;
+            float y0 = _resizeStartRect.y;
+            float w0 = _resizeStartRect.width;
+            float h0 = _resizeStartRect.height;
+            float x = x0, y = y0, w = w0, h = h0;
+
+            // Horizontal
+            if (edge == ResizeEdge.E || edge == ResizeEdge.NE || edge == ResizeEdge.SE)
+                w = w0 + delta.x;
+            else if (edge == ResizeEdge.W || edge == ResizeEdge.NW || edge == ResizeEdge.SW)
+            {
+                w = w0 - delta.x;
+                x = x0 + delta.x;
+            }
+
+            // Vertical
+            if (edge == ResizeEdge.S || edge == ResizeEdge.SE || edge == ResizeEdge.SW)
+                h = h0 + delta.y;
+            else if (edge == ResizeEdge.N || edge == ResizeEdge.NE || edge == ResizeEdge.NW)
+            {
+                h = h0 - delta.y;
+                y = y0 + delta.y;
+            }
+
+            // Clamp to min/max. If we're dragging from the L/T side, undo the position
+            // shift when we hit the minimum so the FAR edge stays put.
+            float clampedW = Mathf.Clamp(w, MenuMinWidth, MenuMaxWidth);
+            float clampedH = Mathf.Clamp(h, MenuMinHeight, MenuMaxHeight);
+            if (clampedW != w && (edge == ResizeEdge.W || edge == ResizeEdge.NW || edge == ResizeEdge.SW))
+                x = x0 + (w0 - clampedW);
+            if (clampedH != h && (edge == ResizeEdge.N || edge == ResizeEdge.NE || edge == ResizeEdge.NW))
+                y = y0 + (h0 - clampedH);
+
+            _windowRect.x = x;
+            _windowRect.y = y;
+            _windowRect.width = clampedW;
+            _windowRect.height = clampedH;
+        }
+
+        // No real cursor swap in IMGUI — just a hook for future polish (Unity 5.6
+        // doesn't expose Cursor.SetCursor reliably from a mod). Keeping a stub so
+        // the hover detection stays a one-liner.
+        private void EditorCursorLike(ResizeEdge edge) { }
 
         private void ApplyWindowSizeFromConfig()
         {
@@ -113,6 +290,80 @@ namespace StickFightColorCustomizer.UI
             _windowRect.width = Mathf.Clamp(_windowRect.width + deltaW, MenuMinWidth, MenuMaxWidth);
             _windowRect.height = Mathf.Clamp(_windowRect.height + deltaH, MenuMinHeight, MenuMaxHeight);
             PersistWindowSize();
+        }
+
+        private void SetMenuHalfSize()
+        {
+            _windowRect.width = Mathf.Clamp(DefaultMenuWidth * 0.5f, MenuMinWidth, MenuMaxWidth);
+            _windowRect.height = Mathf.Clamp(DefaultMenuHeight * 0.5f, MenuMinHeight, MenuMaxHeight);
+            if (_mod != null && _mod.Config != null)
+            {
+                _mod.Config.MenuWindowWidth = _windowRect.width;
+                _mod.Config.MenuWindowHeight = _windowRect.height;
+                ColorConfigStore.Save(_mod.Config);
+            }
+        }
+
+        private void ResetMenuSize()
+        {
+            if (_mod != null && _mod.Config != null)
+            {
+                _mod.Config.MenuWindowWidth = DefaultMenuWidth;
+                _mod.Config.MenuWindowHeight = DefaultMenuHeight;
+            }
+
+            ApplyWindowSizeFromConfig();
+        }
+
+        private void DrawLanguageSection()
+        {
+            GUILayout.Label(MenuLocalization.T("language"), ColorMenuTheme.Label);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(MenuLocalization.T("english"), _mod.Config.MenuLanguage == MenuLanguage.English ? ColorMenuTheme.TabActive : ColorMenuTheme.Button))
+            {
+                MenuLocalization.SetLanguage(MenuLanguage.English);
+                _statusMessage = MenuLocalization.T("language_set_en");
+            }
+
+            if (GUILayout.Button(MenuLocalization.T("spanish"), _mod.Config.MenuLanguage == MenuLanguage.Spanish ? ColorMenuTheme.TabActive : ColorMenuTheme.Button))
+            {
+                MenuLocalization.SetLanguage(MenuLanguage.Spanish);
+                _statusMessage = MenuLocalization.T("language_set_es");
+            }
+
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawMenuSizeSection()
+        {
+            GUILayout.Label(MenuLocalization.T("menu_size"), ColorMenuTheme.Label);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(MenuLocalization.T("menu_half_size"), ColorMenuTheme.ButtonAccent))
+            {
+                SetMenuHalfSize();
+                _statusMessage = MenuLocalization.T("menu_half_applied");
+            }
+
+            if (GUILayout.Button(MenuLocalization.T("menu_smaller"), ColorMenuTheme.Button))
+            {
+                NudgeMenuSize(-40f, -50f);
+            }
+
+            if (GUILayout.Button(MenuLocalization.T("menu_larger"), ColorMenuTheme.Button))
+            {
+                NudgeMenuSize(40f, 50f);
+            }
+
+            if (GUILayout.Button(MenuLocalization.T("menu_reset_size"), ColorMenuTheme.Button))
+            {
+                ResetMenuSize();
+            }
+
+            GUILayout.EndHorizontal();
+            GUILayout.Label(
+                MenuLocalization.T("menu_size_hint")
+                    + " (" + (int)_windowRect.width + "×" + (int)_windowRect.height + ")",
+                ColorMenuTheme.LabelMuted);
         }
 
         private void DrawWindow(int id)
@@ -146,7 +397,7 @@ namespace StickFightColorCustomizer.UI
             GUILayout.Label(MenuLocalization.T("menu_hint_keys"), ColorMenuTheme.LabelMuted);
             GUILayout.EndScrollView();
 
-            GUILayout.Label(ModCredit, ColorMenuTheme.LabelCredit, GUILayout.Height(12f));
+            GUILayout.Label(MenuLocalization.T("made_by_alka"), ColorMenuTheme.LabelCredit, GUILayout.Height(12f));
 
             if (Event.current.type == EventType.KeyDown)
             {
@@ -160,30 +411,20 @@ namespace StickFightColorCustomizer.UI
                 }
             }
 
-            GUI.DragWindow(new Rect(0f, 0f, _windowRect.width - 24f, 24f));
+            // Title-bar drag area shrunk so the top edge / NW / NE resize zones still work.
+            GUI.DragWindow(new Rect(ResizeBorder + 4f, 0f,
+                _windowRect.width - 2f * (ResizeBorder + 4f) - 24f, 22f));
             DrawMenuResizeGrip();
         }
 
         private void DrawMenuResizeGrip()
         {
-            const float grip = 18f;
-            Rect gripRect = new Rect(_windowRect.width - grip, _windowRect.height - grip, grip, grip);
+            // Visual hint in the bottom-right corner (the most discoverable resize spot).
+            // The actual resize is now handled by HandleEdgeResize() on all 4 edges + 4
+            // corners — see the screen-space code in Draw().
+            const float grip = 14f;
+            Rect gripRect = new Rect(_windowRect.width - grip - 1f, _windowRect.height - grip - 1f, grip, grip);
             GUI.Label(gripRect, "◢", ColorMenuTheme.LabelMuted);
-
-            Event e = Event.current;
-            Vector2 mouseInWindow = e.mousePosition - _windowRect.position;
-            if (e.type == EventType.MouseDown && gripRect.Contains(mouseInWindow))
-            {
-                _resizingMenu = true;
-                e.Use();
-            }
-
-            if (_resizingMenu && e.type == EventType.MouseDrag)
-            {
-                _windowRect.width = Mathf.Clamp(mouseInWindow.x, MenuMinWidth, MenuMaxWidth);
-                _windowRect.height = Mathf.Clamp(mouseInWindow.y, MenuMinHeight, MenuMaxHeight);
-                e.Use();
-            }
         }
 
         private void DrawTabs()
@@ -352,7 +593,7 @@ namespace StickFightColorCustomizer.UI
                     continue;
                 }
 
-                DrawHatPickerCell(hat, entry.Id, entry.Label, cellSize, previewSize, ref col, columns);
+                DrawHatPickerCell(hat, entry.Id, MenuLocalization.ItemLabel(entry.Id, entry.Label), cellSize, previewSize, ref col, columns);
             }
 
             GUILayout.EndHorizontal();
@@ -385,7 +626,7 @@ namespace StickFightColorCustomizer.UI
                 GUI.Box(rowRect, GUIContent.none, rowSelected || panelOpen ? ColorMenuTheme.TabActive : ColorMenuTheme.Button);
                 DrawHatSpriteInRect(showId, rowRect, icon, 8f);
 
-                GUI.Label(new Rect(rowRect.x + icon + 10f, rowRect.y + 10f, 150f, 20f), cat.Label, ColorMenuTheme.Label);
+                GUI.Label(new Rect(rowRect.x + icon + 10f, rowRect.y + 10f, 150f, 20f), MenuLocalization.HatCategoryLabel(cat.CategoryId, cat.Label), ColorMenuTheme.Label);
                 GUI.Label(
                     new Rect(rowRect.x + icon + 10f, rowRect.y + 30f, 180f, 14f),
                     HatCategoryCatalog.GetVariantLabel(showId),
@@ -420,7 +661,8 @@ namespace StickFightColorCustomizer.UI
 
         private void DrawHatCategoryPanel(HatSettings hat, HatCategoryDef cat)
         {
-            ColorMenuLayout.BeginSection(cat.Label + " — " + MenuLocalization.T("hat_pick_variant"));
+            ColorMenuLayout.BeginSection(
+                MenuLocalization.HatCategoryLabel(cat.CategoryId, cat.Label) + " — " + MenuLocalization.T("hat_pick_variant"));
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
@@ -512,7 +754,7 @@ namespace StickFightColorCustomizer.UI
             hat.HatId = hatId;
             _mod.Config.Hat = hat;
             _mod.ApplyHatOnly();
-            _statusMessage = MenuLocalization.T("tab_hats") + ": " + label;
+            _statusMessage = MenuLocalization.Tf("selected_colon", MenuLocalization.T("tab_hats"), label);
         }
 
         private void DrawTabWingCust()
@@ -557,7 +799,7 @@ namespace StickFightColorCustomizer.UI
             }
 
             GUILayout.Space(6f);
-            GUILayout.Label("Wing Size", ColorMenuTheme.LabelMuted);
+            GUILayout.Label(MenuLocalization.T("wing_size"), ColorMenuTheme.LabelMuted);
 
             // Wider range so user can make them very small (0.15) or fairly large (1.10).
             float newScale = GUILayout.HorizontalSlider(
@@ -576,7 +818,7 @@ namespace StickFightColorCustomizer.UI
 
             // Wing color picker (uses Config.Colors.Wings — already wired through to the renderer).
             GUILayout.Space(8f);
-            GUILayout.Label("Wing Color", ColorMenuTheme.Label);
+            GUILayout.Label(MenuLocalization.T("wing_color"), ColorMenuTheme.Label);
             BodyColors colors = _mod.Config.Colors;
             if (colors != null)
             {
@@ -589,7 +831,7 @@ namespace StickFightColorCustomizer.UI
                     {
                         colors.Wings = c;
                         _mod.ApplyWingOnly();
-                        _statusMessage = "Wing color updated";
+                        _statusMessage = MenuLocalization.T("wing_color_updated");
                     },
                     DrawChannel);
                 colors.Wings = wColor;
@@ -698,7 +940,8 @@ namespace StickFightColorCustomizer.UI
 
             if (!ObjectFeatureFlags.Released)
             {
-                GUILayout.Label(MenuLocalization.T("shoe_coming_soon"), ColorMenuTheme.SectionHeader);
+                GUILayout.Label(MenuLocalization.T("objects_coming_soon"), ColorMenuTheme.SectionHeader);
+                ColorMenuLayout.HintLabel(MenuLocalization.T("objects_coming_soon_hint"));
                 ColorMenuLayout.EndSection();
                 return;
             }
@@ -772,7 +1015,7 @@ namespace StickFightColorCustomizer.UI
                     obj.ObjectId = entry.Id;
                     _mod.Config.Object = obj;
                     _mod.ApplyObjectsOnly();
-                    _statusMessage = MenuLocalization.T("tab_objects") + ": " + entry.Label;
+                    _statusMessage = MenuLocalization.Tf("selected_colon", MenuLocalization.T("tab_objects"), MenuLocalization.ItemLabel(entry.Id, entry.Label));
                 }
 
                 Sprite preview = ObjectSpriteFactory.GetPreviewSprite(entry.Id);
@@ -789,7 +1032,7 @@ namespace StickFightColorCustomizer.UI
 
                 GUI.Label(
                     new Rect(cellRect.x, cellRect.y + cellRect.height - 18f, cellRect.width, 16f),
-                    entry.Label,
+                    MenuLocalization.ItemLabel(entry.Id, entry.Label),
                     ColorMenuTheme.LabelMuted);
                 GUILayout.EndVertical();
 
@@ -830,7 +1073,7 @@ namespace StickFightColorCustomizer.UI
                     tops.TopsId = entry.Id;
                     _mod.Config.Tops = tops;
                     _mod.ApplyTopsOnly();
-                    _statusMessage = MenuLocalization.T("tab_tops") + ": " + entry.Label;
+                    _statusMessage = MenuLocalization.Tf("selected_colon", MenuLocalization.T("tab_tops"), MenuLocalization.ItemLabel(entry.Id, entry.Label));
                 }
 
                 Sprite preview = TopsSpriteFactory.GetSprite(entry.Id);
@@ -852,7 +1095,7 @@ namespace StickFightColorCustomizer.UI
 
                 GUI.Label(
                     new Rect(cellRect.x, cellRect.y + cellRect.height - 18f, cellRect.width, 16f),
-                    entry.Label,
+                    MenuLocalization.ItemLabel(entry.Id, entry.Label),
                     ColorMenuTheme.LabelMuted);
                 GUILayout.EndVertical();
 
@@ -893,7 +1136,7 @@ namespace StickFightColorCustomizer.UI
                     shoe.ShoeId = entry.Id;
                     _mod.Config.Shoe = shoe;
                     _mod.ApplyShoeOnly();
-                    _statusMessage = MenuLocalization.T("tab_shoes") + ": " + entry.Label;
+                    _statusMessage = MenuLocalization.Tf("selected_colon", MenuLocalization.T("tab_shoes"), MenuLocalization.ItemLabel(entry.Id, entry.Label));
                 }
 
                 Sprite preview = ShoeSpriteFactory.GetSprite(entry.Id);
@@ -915,7 +1158,7 @@ namespace StickFightColorCustomizer.UI
 
                 GUI.Label(
                     new Rect(cellRect.x, cellRect.y + cellRect.height - 18f, cellRect.width, 16f),
-                    entry.Label,
+                    MenuLocalization.ItemLabel(entry.Id, entry.Label),
                     ColorMenuTheme.LabelMuted);
                 GUILayout.EndVertical();
 
@@ -1120,12 +1363,12 @@ namespace StickFightColorCustomizer.UI
             // ── Style picker: clásicos + épicos ──
             GUILayout.Space(6f);
             GUILayout.BeginVertical(ColorMenuTheme.Box);
-            GUILayout.Label("✦  Glow Style  ✦", ColorMenuTheme.SectionHeader);
-            GUILayout.Label("Cambia la forma del aura sin tocar el resto.", ColorMenuTheme.LabelMuted);
+            GUILayout.Label(MenuLocalization.T("glow_style_header"), ColorMenuTheme.SectionHeader);
+            GUILayout.Label(MenuLocalization.T("glow_style_hint"), ColorMenuTheme.LabelMuted);
             GUILayout.Space(4f);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Activo:", ColorMenuTheme.LabelMuted, GUILayout.Width(48f));
+            GUILayout.Label(MenuLocalization.T("glow_active_label"), ColorMenuTheme.LabelMuted, GUILayout.Width(48f));
             Color prevBg = GUI.backgroundColor;
             GUI.backgroundColor = glow.Color;
             GUILayout.Box(" ", GUILayout.Width(14f), GUILayout.Height(14f));
@@ -1135,11 +1378,11 @@ namespace StickFightColorCustomizer.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Space(4f);
-            GUILayout.Label("Clásicos", ColorMenuTheme.LabelMuted);
+            GUILayout.Label(MenuLocalization.T("glow_classic_row"), ColorMenuTheme.LabelMuted);
             DrawGlowStyleRow(glow, GlowStyleModulator.ClassicStyles);
 
             GUILayout.Space(4f);
-            GUILayout.Label("Épicos", ColorMenuTheme.LabelMuted);
+            GUILayout.Label(MenuLocalization.T("glow_epic_row"), ColorMenuTheme.LabelMuted);
             DrawGlowStyleRow(glow, GlowStyleModulator.EpicStyles);
 
             GUILayout.Space(2f);
@@ -1226,7 +1469,7 @@ namespace StickFightColorCustomizer.UI
                 {
                     glow.Style = kind;
                     ApplyGlowIfEnabled();
-                    _statusMessage = "Glow style: " + label;
+                    _statusMessage = MenuLocalization.Tf("glow_style_set", label);
                 }
             }
         }
@@ -1326,43 +1569,9 @@ namespace StickFightColorCustomizer.UI
         private void DrawTabSettings()
         {
             GUILayout.BeginVertical(ColorMenuTheme.Box);
-            GUILayout.Label(MenuLocalization.T("language"), ColorMenuTheme.Label);
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button(MenuLocalization.T("english"), _mod.Config.MenuLanguage == MenuLanguage.English ? ColorMenuTheme.TabActive : ColorMenuTheme.Button))
-            {
-                MenuLocalization.SetLanguage(MenuLanguage.English);
-            }
-            if (GUILayout.Button(MenuLocalization.T("spanish"), _mod.Config.MenuLanguage == MenuLanguage.Spanish ? ColorMenuTheme.TabActive : ColorMenuTheme.Button))
-            {
-                MenuLocalization.SetLanguage(MenuLanguage.Spanish);
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.Space(10f);
-            GUILayout.Label(MenuLocalization.T("menu_size"), ColorMenuTheme.Label);
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button(MenuLocalization.T("menu_smaller"), ColorMenuTheme.Button))
-            {
-                NudgeMenuSize(-40f, -50f);
-            }
-            if (GUILayout.Button(MenuLocalization.T("menu_larger"), ColorMenuTheme.Button))
-            {
-                NudgeMenuSize(40f, 50f);
-            }
-            if (GUILayout.Button(MenuLocalization.T("menu_reset_size"), ColorMenuTheme.Button))
-            {
-                _mod.Config.MenuWindowWidth = 540f;
-                _mod.Config.MenuWindowHeight = 680f;
-                ApplyWindowSizeFromConfig();
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.Label(
-                MenuLocalization.T("menu_size_hint")
-                    + " (" + (int)_windowRect.width + "×" + (int)_windowRect.height + ")",
-                ColorMenuTheme.LabelMuted);
-
-            GUILayout.Space(10f);
-            GUILayout.Label("Activo: " + ModFeatureGate.DescribeActive(_mod.Config), ColorMenuTheme.LabelMuted);
+            ColorMenuLayout.HintLabel(MenuLocalization.T("tab_settings") + " — " + MenuLocalization.T("mp_sync_hint"));
+            GUILayout.Space(6f);
+            GUILayout.Label(MenuLocalization.T("feat_active_prefix") + " " + ModFeatureGate.DescribeActive(_mod.Config), ColorMenuTheme.LabelMuted);
             GUILayout.Space(6f);
             GUILayout.Label(MenuLocalization.T("options"), ColorMenuTheme.Label);
             bool safeMp = GUILayout.Toggle(
@@ -1381,12 +1590,14 @@ namespace StickFightColorCustomizer.UI
             ColorMenuLayout.HintLabel(MenuLocalization.T("mod_sync_hint"));
 
             GUILayout.Space(6f);
-            GUILayout.Label("SFCC mods: " + Network.NetworkSyncDiagnostics.DetectedModCount
-                + " | pending: " + Network.NetworkSyncDiagnostics.PendingModCount, ColorMenuTheme.LabelMuted);
-            GUILayout.Label("Last: " + Network.NetworkSyncDiagnostics.LastEvent, ColorMenuTheme.LabelMuted);
+            GUILayout.Label(MenuLocalization.Tf(
+                "sfcc_mods",
+                Network.NetworkSyncDiagnostics.DetectedModCount,
+                Network.NetworkSyncDiagnostics.PendingModCount), ColorMenuTheme.LabelMuted);
+            GUILayout.Label(MenuLocalization.Tf("sfcc_last", Network.NetworkSyncDiagnostics.LastEvent), ColorMenuTheme.LabelMuted);
             if (!ModFeatureGate.IsBodyActive(_mod.Config))
             {
-                GUILayout.Label("Body sync OFF — enable body colors to publish sfcc.", ColorMenuTheme.LabelMuted);
+                GUILayout.Label(MenuLocalization.T("body_sync_off"), ColorMenuTheme.LabelMuted);
             }
 
             _mod.Config.UseUniformSkin = GUILayout.Toggle(_mod.Config.UseUniformSkin, MenuLocalization.T("uniform_skin"), ColorMenuTheme.Toggle);
@@ -1426,10 +1637,14 @@ namespace StickFightColorCustomizer.UI
         private void DrawTabAdvanced()
         {
             GUILayout.BeginVertical(ColorMenuTheme.Box);
+            DrawLanguageSection();
+            GUILayout.Space(10f);
+            DrawMenuSizeSection();
+            GUILayout.Space(12f);
             DrawSkinCodeSection();
 
             GUILayout.Space(10f);
-            GUILayout.Label(MenuLocalization.T("active") + ": " + ModFeatureGate.DescribeActive(_mod.Config), ColorMenuTheme.LabelMuted);
+            GUILayout.Label(MenuLocalization.T("feat_active_prefix") + " " + ModFeatureGate.DescribeActive(_mod.Config), ColorMenuTheme.LabelMuted);
             GUILayout.Space(8f);
             if (GUILayout.Button(MenuLocalization.T("log_renderers"), ColorMenuTheme.Button))
             {
@@ -1545,7 +1760,7 @@ namespace StickFightColorCustomizer.UI
             GUILayout.BeginHorizontal();
             foreach (string preset in StylePresets.All)
             {
-                if (GUILayout.Button(preset, ColorMenuTheme.Button, GUILayout.Width(68f)))
+                if (GUILayout.Button(MenuLocalization.PresetLabel(preset), ColorMenuTheme.Button, GUILayout.Width(68f)))
                 {
                     StylePresets.ApplyFullStyle(_mod.Config, preset);
                     RefreshUiFromConfig();
@@ -1555,7 +1770,7 @@ namespace StickFightColorCustomizer.UI
                         _mod.ApplyWeaponOnly();
                     }
                     _mod.ApplyFullSkinFromConfig();
-                    _statusMessage = "Preset " + preset;
+                    _statusMessage = MenuLocalization.Tf("preset_applied", MenuLocalization.PresetLabel(preset));
                 }
                 col++;
                 if (col >= 3)
@@ -1576,7 +1791,7 @@ namespace StickFightColorCustomizer.UI
             GUILayout.BeginHorizontal();
             foreach (string preset in WeaponPresets.All)
             {
-                if (GUILayout.Button(preset, ColorMenuTheme.Button, GUILayout.Width(68f)))
+                if (GUILayout.Button(MenuLocalization.PresetLabel(preset), ColorMenuTheme.Button, GUILayout.Width(68f)))
                 {
                     WeaponPresets.Apply(weapon, preset);
                     _mod.Config.Weapon = weapon;
@@ -1584,7 +1799,7 @@ namespace StickFightColorCustomizer.UI
                     _hexWeaponField.ForceSyncHex(_hexWeapon);
                     WeaponColorApplier.MarkDirty();
                     _mod.ApplyWeaponOnly();
-                    _statusMessage = "Weapon: " + preset;
+                    _statusMessage = MenuLocalization.Tf("weapon_preset_applied", MenuLocalization.PresetLabel(preset));
                 }
                 col++;
                 if (col >= 3)

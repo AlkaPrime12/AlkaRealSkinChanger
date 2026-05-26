@@ -37,7 +37,28 @@ namespace StickFightColorCustomizer.Core
             new ShoeCatalogEntry { Id = "slim_punk",    Label = "Slim Punk Boot" },
             new ShoeCatalogEntry { Id = "slim_arctic",  Label = "Slim Arctic Boot" },
             new ShoeCatalogEntry { Id = "slim_rider",   Label = "Slim Rider Boot" },
-            new ShoeCatalogEntry { Id = "slim_chelsea", Label = "Slim Chelsea Boot" }
+            new ShoeCatalogEntry { Id = "slim_chelsea", Label = "Slim Chelsea Boot" },
+            // ── 20 zapatos mas pequeños / variados ──
+            new ShoeCatalogEntry { Id = "sh_loafer",     Label = "Loafer" },
+            new ShoeCatalogEntry { Id = "sh_oxford",     Label = "Oxford" },
+            new ShoeCatalogEntry { Id = "sh_moccasin",   Label = "Moccasin" },
+            new ShoeCatalogEntry { Id = "sh_court",      Label = "Court Sneaker" },
+            new ShoeCatalogEntry { Id = "sh_kicks_red",  Label = "Red Kicks" },
+            new ShoeCatalogEntry { Id = "sh_kicks_blue", Label = "Blue Kicks" },
+            new ShoeCatalogEntry { Id = "sh_kicks_pink", Label = "Pink Kicks" },
+            new ShoeCatalogEntry { Id = "sh_chelsea",    Label = "Chelsea Slip-On" },
+            new ShoeCatalogEntry { Id = "sh_ballet",     Label = "Ballet Flats" },
+            new ShoeCatalogEntry { Id = "sh_geta",       Label = "Geta Sandals" },
+            new ShoeCatalogEntry { Id = "sh_iceskate",   Label = "Ice Skates" },
+            new ShoeCatalogEntry { Id = "sh_snowboot",   Label = "Snow Boots" },
+            new ShoeCatalogEntry { Id = "sh_rainboot",   Label = "Rain Boots" },
+            new ShoeCatalogEntry { Id = "sh_flipflop",   Label = "Flip-Flops" },
+            new ShoeCatalogEntry { Id = "sh_clog",       Label = "Clogs" },
+            new ShoeCatalogEntry { Id = "sh_platform",   Label = "Platforms" },
+            new ShoeCatalogEntry { Id = "sh_skater",     Label = "Skate Shoes" },
+            new ShoeCatalogEntry { Id = "sh_canvas",     Label = "Canvas Shoes" },
+            new ShoeCatalogEntry { Id = "sh_geta_blue",  Label = "Blue Geta" },
+            new ShoeCatalogEntry { Id = "sh_winged",     Label = "Winged Boot" }
         };
 
         public static bool IsValid(string shoeId)

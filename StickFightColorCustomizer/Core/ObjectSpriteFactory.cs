@@ -168,8 +168,483 @@ namespace StickFightColorCustomizer.Core
                     return BuildFlameTeardrop();
                 case "mini_wing":
                     return BuildMiniWing(new Color(0.92f, 0.94f, 1f, 1f), new Color(0.55f, 0.65f, 0.95f, 1f));
+                // ── 20 nuevos sprites ──
+                case "obj_axe":      return BuildAxe();
+                case "obj_arrow":    return BuildArrow();
+                case "obj_dna":      return BuildDna();
+                case "obj_atom":     return BuildAtom();
+                case "obj_flame":    return BuildFlame();
+                case "obj_iceshard": return BuildIceShard();
+                case "obj_drop":     return BuildDrop();
+                case "obj_clock":    return BuildClockSprite();
+                case "obj_eye":      return BuildEyeSprite();
+                case "obj_chain":    return BuildChainLink();
+                case "obj_coin":     return BuildCoinSprite();
+                case "obj_dice":     return BuildDiceSprite();
+                case "obj_card":     return BuildCardSprite();
+                case "obj_bomb":     return BuildBombSprite();
+                case "obj_potion":   return BuildPotionSprite();
+                case "obj_pumpkin":  return BuildPumpkinSprite();
+                case "obj_anchor":   return BuildAnchorSprite();
+                case "obj_horse":    return BuildHorseshoe();
+                case "obj_paw":      return BuildPawSprite();
+                case "obj_galaxy":   return BuildGalaxySprite();
                 default:
                     return BuildOrb(new Color(0.06f, 0.06f, 0.08f, 1f), new Color(0.35f, 0.35f, 0.42f, 1f));
+            }
+        }
+
+        // ── 20 NUEVOS SPRITES (todos 64×64 con pivot al centro) ────────────────────
+        private static Sprite BuildAxe()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            // Handle diagonal
+            for (int t = -16; t < 18; t++)
+            {
+                int x = 32 + t, y = 32 - t;
+                if (x >= 0 && x < size && y >= 0 && y < size)
+                {
+                    tex.SetPixel(x, y, new Color(0.55f, 0.32f, 0.10f, 1f));
+                    if (x + 1 < size) tex.SetPixel(x + 1, y, new Color(0.30f, 0.16f, 0.05f, 1f));
+                }
+            }
+            // Axe head
+            FillCircleArea(tex, 18, 46, 9, new Color(0.78f, 0.80f, 0.86f, 1f));
+            FillCircleArea(tex, 22, 50, 5, new Color(0.45f, 0.46f, 0.52f, 1f));
+            // Sharp edge
+            for (int t = 0; t < 14; t++) tex.SetPixel(10, 40 + t, new Color(1f, 1f, 1f, 1f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildArrow()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            Color shaft = new Color(0.55f, 0.32f, 0.10f, 1f);
+            for (int t = 0; t < 36; t++)
+            {
+                int x = 14 + t, y = 32;
+                tex.SetPixel(x, y, shaft);
+                tex.SetPixel(x, y + 1, shaft);
+            }
+            // Tip
+            for (int t = 0; t < 8; t++)
+            {
+                tex.SetPixel(50 + t, 32 - t, new Color(0.85f, 0.86f, 0.92f, 1f));
+                tex.SetPixel(50 + t, 33 + t, new Color(0.85f, 0.86f, 0.92f, 1f));
+            }
+            // Feather fletching
+            for (int t = 0; t < 6; t++)
+            {
+                tex.SetPixel(12 - t, 32 - t, new Color(0.85f, 0.10f, 0.10f, 1f));
+                tex.SetPixel(12 - t, 34 + t, new Color(0.85f, 0.10f, 0.10f, 1f));
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildDna()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            Color a = new Color(0.30f, 0.85f, 1f, 1f);
+            Color b = new Color(1f, 0.30f, 0.55f, 1f);
+            for (int y = 4; y < 60; y++)
+            {
+                float ang = (y / 60f) * Mathf.PI * 4f;
+                int x1 = 32 + Mathf.RoundToInt(Mathf.Cos(ang) * 12f);
+                int x2 = 32 - Mathf.RoundToInt(Mathf.Cos(ang) * 12f);
+                tex.SetPixel(x1, y, a); tex.SetPixel(x1 + 1, y, a);
+                tex.SetPixel(x2, y, b); tex.SetPixel(x2 + 1, y, b);
+                if ((y % 6) == 0)
+                {
+                    int lo = Mathf.Min(x1, x2), hi = Mathf.Max(x1, x2);
+                    for (int x = lo + 2; x < hi; x++) tex.SetPixel(x, y, new Color(0.85f, 0.85f, 0.86f, 1f));
+                }
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildAtom()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            // Nucleus
+            FillCircleArea(tex, 32, 32, 6, new Color(1f, 0.45f, 0.15f, 1f));
+            FillCircleArea(tex, 32, 32, 3, new Color(1f, 0.92f, 0.40f, 1f));
+            // 3 orbit ellipses rotated
+            DrawEllipseRing(tex, 32, 32, 26, 10, 0, new Color(0.30f, 0.85f, 1f, 1f));
+            DrawEllipseRing(tex, 32, 32, 26, 10, 60, new Color(0.55f, 1f, 0.45f, 1f));
+            DrawEllipseRing(tex, 32, 32, 26, 10, 120, new Color(1f, 0.50f, 0.85f, 1f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildFlame()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            Color outer = new Color(1f, 0.40f, 0.05f, 1f);
+            Color mid = new Color(1f, 0.78f, 0.18f, 1f);
+            Color inner = new Color(1f, 0.96f, 0.55f, 1f);
+            Vector2 c = new Vector2(32, 28);
+            for (int y = 4; y < 60; y++)
+            {
+                float t = (y - 4) / 56f;
+                float width = Mathf.Lerp(20f, 2f, t);
+                width += Mathf.Sin(t * 14f) * 1.6f;
+                int xMin = (int)(c.x - width / 2);
+                int xMax = (int)(c.x + width / 2);
+                for (int x = xMin; x <= xMax; x++)
+                {
+                    if (x < 0 || x >= size) continue;
+                    float u = Mathf.Abs(x - c.x) / (width * 0.5f);
+                    Color col = u < 0.35f ? inner : (u < 0.7f ? mid : outer);
+                    tex.SetPixel(x, y, col);
+                }
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildIceShard()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            Color hi = new Color(0.85f, 0.95f, 1f, 1f);
+            Color lo = new Color(0.35f, 0.65f, 0.95f, 1f);
+            // Diamond + extra spike at the top
+            Vector2 c = new Vector2(32, 36);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float u = (x - c.x) / 16f, v = (y - c.y) / 24f;
+                    if (Mathf.Abs(u) + Mathf.Abs(v) < 1f)
+                        tex.SetPixel(x, y, Mathf.Abs(u) < 0.25f ? hi : lo);
+                }
+            }
+            // Shine streak
+            for (int t = 0; t < 14; t++) tex.SetPixel(28 + t / 3, 28 + t, Color.white);
+            return Finish(tex);
+        }
+
+        private static Sprite BuildDrop()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            Color hi = new Color(0.55f, 0.85f, 1f, 1f);
+            Color lo = new Color(0.10f, 0.40f, 0.78f, 1f);
+            for (int y = 4; y < 60; y++)
+            {
+                float t = (y - 4) / 56f;
+                float w = (t < 0.55f) ? Mathf.Lerp(2f, 18f, t / 0.55f)
+                                       : Mathf.Lerp(18f, 14f, (t - 0.55f) / 0.45f);
+                for (int x = 32 - (int)(w / 2); x <= 32 + (int)(w / 2); x++)
+                {
+                    if (x < 0 || x >= size) continue;
+                    float u = Mathf.Abs(x - 32) / (w * 0.5f);
+                    tex.SetPixel(x, y, u < 0.35f ? Color.white : Color.Lerp(hi, lo, u));
+                }
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildClockSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            FillCircleArea(tex, 32, 32, 26, new Color(0.95f, 0.92f, 0.86f, 1f));
+            FillCircleArea(tex, 32, 32, 22, new Color(1f, 1f, 1f, 1f));
+            // Tick marks
+            for (int i = 0; i < 12; i++)
+            {
+                float ang = i / 12f * Mathf.PI * 2f;
+                int x = 32 + (int)(Mathf.Cos(ang) * 20);
+                int y = 32 + (int)(Mathf.Sin(ang) * 20);
+                tex.SetPixel(x, y, Color.black);
+            }
+            // Hands
+            for (int t = 0; t < 14; t++) tex.SetPixel(32, 32 + t, Color.black);
+            for (int t = 0; t < 10; t++) tex.SetPixel(32 + t, 32, new Color(0.85f, 0.10f, 0.10f, 1f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildEyeSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            // Almond shape
+            for (int y = 26; y < 38; y++)
+            {
+                for (int x = 12; x < 52; x++)
+                {
+                    float u = (x - 32) / 20f, v = (y - 32) / 6f;
+                    if (u * u + v * v < 1f) tex.SetPixel(x, y, Color.white);
+                }
+            }
+            // Iris
+            FillCircleArea(tex, 32, 32, 8, new Color(0.20f, 0.55f, 0.90f, 1f));
+            FillCircleArea(tex, 32, 32, 4, Color.black);
+            // Highlight
+            tex.SetPixel(34, 34, Color.white);
+            return Finish(tex);
+        }
+
+        private static Sprite BuildChainLink()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            // Outer ring, hollow centre
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float u = (x - 32) / 18f, v = (y - 32) / 28f;
+                    float d = u * u + v * v;
+                    if (d < 1f && d > 0.42f)
+                    {
+                        Color c = d > 0.78f ? new Color(0.45f, 0.45f, 0.50f, 1f)
+                                            : new Color(0.85f, 0.85f, 0.90f, 1f);
+                        tex.SetPixel(x, y, c);
+                    }
+                }
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildCoinSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            FillCircleArea(tex, 32, 32, 22, new Color(1f, 0.85f, 0.20f, 1f));
+            FillCircleArea(tex, 32, 32, 19, new Color(1f, 0.96f, 0.45f, 1f));
+            FillCircleArea(tex, 32, 32, 16, new Color(0.85f, 0.65f, 0.10f, 1f));
+            // Star centre
+            FillCircleArea(tex, 32, 32, 4, new Color(1f, 1f, 0.50f, 1f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildDiceSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            FillSquare(tex, 14, 14, 50, 50, new Color(0.95f, 0.95f, 0.95f, 1f));
+            FillSquare(tex, 16, 16, 50, 50, new Color(0.78f, 0.78f, 0.78f, 1f));
+            FillSquare(tex, 14, 14, 48, 48, new Color(1f, 1f, 1f, 1f));
+            // Pip pattern (5)
+            FillCircleArea(tex, 22, 22, 3, Color.black);
+            FillCircleArea(tex, 42, 22, 3, Color.black);
+            FillCircleArea(tex, 32, 32, 3, Color.black);
+            FillCircleArea(tex, 22, 42, 3, Color.black);
+            FillCircleArea(tex, 42, 42, 3, Color.black);
+            return Finish(tex);
+        }
+
+        private static Sprite BuildCardSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            FillSquare(tex, 16, 6, 48, 58, new Color(0.95f, 0.95f, 0.95f, 1f));
+            FillSquare(tex, 18, 8, 46, 56, Color.white);
+            // Suit (heart) centred
+            FillCircleArea(tex, 27, 36, 6, new Color(0.85f, 0.10f, 0.10f, 1f));
+            FillCircleArea(tex, 37, 36, 6, new Color(0.85f, 0.10f, 0.10f, 1f));
+            FillTriangleDown(tex, 22, 26, 42, 26, 32, 14, new Color(0.85f, 0.10f, 0.10f, 1f));
+            // Corner A
+            FillSquare(tex, 20, 50, 24, 54, new Color(0.85f, 0.10f, 0.10f, 1f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildBombSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            FillCircleArea(tex, 32, 28, 18, new Color(0.10f, 0.10f, 0.12f, 1f));
+            FillCircleArea(tex, 32, 28, 14, new Color(0.20f, 0.20f, 0.25f, 1f));
+            // Shine
+            FillCircleArea(tex, 26, 22, 3, Color.white);
+            // Fuse
+            for (int t = 0; t < 12; t++)
+            {
+                int x = 32 + t / 2, y = 46 + t;
+                if (x < size && y < size) tex.SetPixel(x, y, new Color(0.55f, 0.32f, 0.10f, 1f));
+            }
+            // Spark
+            FillCircleArea(tex, 38, 58, 3, new Color(1f, 0.78f, 0.18f, 1f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildPotionSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            // Bottle
+            FillSquare(tex, 22, 6, 42, 36, new Color(0.30f, 0.85f, 1f, 1f));
+            FillSquare(tex, 26, 36, 38, 50, new Color(0.55f, 0.85f, 1f, 1f));
+            // Cork
+            FillSquare(tex, 26, 50, 38, 56, new Color(0.55f, 0.32f, 0.10f, 1f));
+            // Shine
+            for (int y = 10; y < 30; y++) tex.SetPixel(26, y, Color.white);
+            // Bubbles
+            FillCircleArea(tex, 30, 18, 2, new Color(1f, 1f, 1f, 0.7f));
+            FillCircleArea(tex, 36, 24, 2, new Color(1f, 1f, 1f, 0.7f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildPumpkinSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            FillCircleArea(tex, 32, 30, 22, new Color(1f, 0.55f, 0.10f, 1f));
+            // Vertical ridges
+            for (int y = 12; y < 50; y++)
+            {
+                tex.SetPixel(22, y, new Color(0.78f, 0.32f, 0.04f, 1f));
+                tex.SetPixel(32, y, new Color(0.78f, 0.32f, 0.04f, 1f));
+                tex.SetPixel(42, y, new Color(0.78f, 0.32f, 0.04f, 1f));
+            }
+            // Face
+            FillTriangleDown(tex, 22, 30, 28, 30, 25, 24, Color.black);
+            FillTriangleDown(tex, 36, 30, 42, 30, 39, 24, Color.black);
+            FillSquare(tex, 24, 18, 40, 22, Color.black);
+            tex.SetPixel(26, 20, new Color(1f, 0.55f, 0.10f, 1f));
+            tex.SetPixel(32, 20, new Color(1f, 0.55f, 0.10f, 1f));
+            tex.SetPixel(38, 20, new Color(1f, 0.55f, 0.10f, 1f));
+            // Stem
+            FillSquare(tex, 30, 50, 34, 56, new Color(0.30f, 0.55f, 0.12f, 1f));
+            return Finish(tex);
+        }
+
+        private static Sprite BuildAnchorSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            Color metal = new Color(0.45f, 0.50f, 0.58f, 1f);
+            Color metalHi = new Color(0.78f, 0.82f, 0.86f, 1f);
+            // Shaft
+            FillSquare(tex, 30, 14, 34, 54, metal);
+            FillSquare(tex, 31, 14, 33, 54, metalHi);
+            // Top ring
+            FillCircleArea(tex, 32, 54, 5, metal);
+            FillCircleArea(tex, 32, 54, 3, new Color(0, 0, 0, 0));
+            // Crossbar
+            FillSquare(tex, 22, 44, 42, 46, metal);
+            // Arms
+            for (int t = 0; t < 14; t++)
+            {
+                int x1 = 18 + t / 2, y1 = 14 + t;
+                int x2 = 46 - t / 2, y2 = 14 + t;
+                if (x1 < size && y1 < size) tex.SetPixel(x1, y1, metal);
+                if (x2 < size && y2 < size) tex.SetPixel(x2, y2, metal);
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildHorseshoe()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float u = (x - 32) / 20f, v = (y - 28) / 22f;
+                    float d = u * u + v * v;
+                    if (d < 1f && d > 0.45f && y < 36)
+                    {
+                        Color c = d > 0.8f ? new Color(0.45f, 0.45f, 0.50f, 1f)
+                                            : new Color(0.85f, 0.85f, 0.90f, 1f);
+                        tex.SetPixel(x, y, c);
+                    }
+                }
+            }
+            // Nail holes
+            for (int i = 0; i < 6; i++)
+            {
+                float ang = Mathf.Lerp(Mathf.PI, Mathf.PI * 2f, i / 5f);
+                int hx = 32 + (int)(Mathf.Cos(ang) * 16);
+                int hy = 28 + (int)(Mathf.Sin(ang) * 18);
+                if (hx >= 0 && hy >= 0 && hx < size && hy < size) tex.SetPixel(hx, hy, Color.black);
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildPawSprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            Color pad = new Color(0.32f, 0.20f, 0.12f, 1f);
+            // Main pad
+            FillCircleArea(tex, 32, 24, 10, pad);
+            // Four toes
+            FillCircleArea(tex, 18, 36, 5, pad);
+            FillCircleArea(tex, 26, 44, 5, pad);
+            FillCircleArea(tex, 38, 44, 5, pad);
+            FillCircleArea(tex, 46, 36, 5, pad);
+            return Finish(tex);
+        }
+
+        private static Sprite BuildGalaxySprite()
+        {
+            const int size = 64; var tex = NewTexture(size);
+            // Background dark
+            for (int y = 0; y < size; y++) for (int x = 0; x < size; x++)
+            {
+                float d = Vector2.Distance(new Vector2(x, y), new Vector2(32, 32));
+                if (d > 28) continue;
+                float bg = 0.08f - d * 0.002f;
+                tex.SetPixel(x, y, new Color(bg, bg, bg + 0.05f, 1f));
+            }
+            // Spiral arms
+            for (int t = 0; t < 60; t++)
+            {
+                float ang = t * 0.32f;
+                float r = 4 + t * 0.4f;
+                int x = 32 + (int)(Mathf.Cos(ang) * r);
+                int y = 32 + (int)(Mathf.Sin(ang) * r);
+                if (x >= 0 && y >= 0 && x < size && y < size)
+                {
+                    tex.SetPixel(x, y, new Color(0.55f, 0.65f, 1f, 1f));
+                    if (x + 1 < size) tex.SetPixel(x + 1, y, new Color(0.85f, 0.85f, 1f, 1f));
+                }
+                int x2 = 32 - (int)(Mathf.Cos(ang) * r);
+                int y2 = 32 - (int)(Mathf.Sin(ang) * r);
+                if (x2 >= 0 && y2 >= 0 && x2 < size && y2 < size)
+                {
+                    tex.SetPixel(x2, y2, new Color(0.95f, 0.45f, 0.85f, 1f));
+                }
+            }
+            // Bright core
+            FillCircleArea(tex, 32, 32, 4, new Color(1f, 0.92f, 0.65f, 1f));
+            return Finish(tex);
+        }
+
+        // ── shared helpers used by the new sprites ──
+        private static void FillCircleArea(Texture2D tex, int cx, int cy, int r, Color c)
+        {
+            for (int y = cy - r; y <= cy + r; y++)
+                for (int x = cx - r; x <= cx + r; x++)
+                {
+                    if (x < 0 || y < 0 || x >= tex.width || y >= tex.height) continue;
+                    int dx = x - cx, dy = y - cy;
+                    if (dx * dx + dy * dy <= r * r) tex.SetPixel(x, y, c);
+                }
+        }
+        private static void DrawEllipseRing(Texture2D tex, int cx, int cy, int rx, int ry, float angleDeg, Color c)
+        {
+            float rad = angleDeg * Mathf.Deg2Rad;
+            float cs = Mathf.Cos(rad), sn = Mathf.Sin(rad);
+            for (float a = 0; a < Mathf.PI * 2; a += 0.05f)
+            {
+                float ex = rx * Mathf.Cos(a);
+                float ey = ry * Mathf.Sin(a);
+                int x = cx + Mathf.RoundToInt(ex * cs - ey * sn);
+                int y = cy + Mathf.RoundToInt(ex * sn + ey * cs);
+                if (x >= 0 && y >= 0 && x < tex.width && y < tex.height) tex.SetPixel(x, y, c);
+            }
+        }
+        private static void FillTriangleDown(Texture2D tex, int x0, int y0, int x1, int y1, int x2, int y2, Color c)
+        {
+            int yMin = Mathf.Min(y0, Mathf.Min(y1, y2));
+            int yMax = Mathf.Max(y0, Mathf.Max(y1, y2));
+            for (int y = yMin; y <= yMax; y++)
+            {
+                int leftX = int.MaxValue, rightX = int.MinValue;
+                CheckEdge(x0, y0, x1, y1, y, ref leftX, ref rightX);
+                CheckEdge(x1, y1, x2, y2, y, ref leftX, ref rightX);
+                CheckEdge(x2, y2, x0, y0, y, ref leftX, ref rightX);
+                for (int x = leftX; x <= rightX; x++)
+                    if (x >= 0 && y >= 0 && x < tex.width && y < tex.height) tex.SetPixel(x, y, c);
+            }
+        }
+        private static void CheckEdge(int ax, int ay, int bx, int by, int y, ref int lo, ref int hi)
+        {
+            if ((ay <= y && by > y) || (by <= y && ay > y))
+            {
+                float t = (y - ay) / (float)(by - ay);
+                int x = ax + Mathf.RoundToInt((bx - ax) * t);
+                if (x < lo) lo = x;
+                if (x > hi) hi = x;
             }
         }
 
