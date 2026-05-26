@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C3D4E5F6-A7B8-9012-CDEF-123456789ABC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>StickFightColorCustomizer.BepInEx</RootNamespace>
+    <AssemblyName>AlkaSkin</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <LangVersion>latest</LangVersion>
+    <StickFightDir Condition=" '$(StickFightDir)' == '' ">C:\Program Files (x86)\Steam\steamapps\common\StickFightTheGame</StickFightDir>
+    <BepInExDir Condition=" '$(BepInExDir)' == '' ">..\StickFightColorCustomizer\Deps</BepInExDir>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\StickFightColorCustomizer\Deps\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\StickFightColorCustomizer\Deps\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\StickFightColorCustomizer\Deps\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>$(BepInExDir)\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\StickFightColorCustomizer\Deps\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlkaSkinPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\StickFightColorCustomizer\**\*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+    <Compile Remove="..\StickFightColorCustomizer\ColorCustomizerMod.cs" />
+    <Compile Remove="..\StickFightColorCustomizer\Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="DeployToBepInEx" AfterTargets="Build">
+    <PropertyGroup>
+      <PluginDir>$(StickFightDir)\BepInEx\plugins\AlkaSkin</PluginDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(PluginDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginDir)" SkipUnchangedFiles="false" />
+    <Message Importance="high" Text="[Deploy] $(TargetFileName) -&gt; $(PluginDir)" />
+    <!-- Deploy PNG hat images to the plugin folder -->
+    <PropertyGroup>
+      <ImagesSourceDir>C:\Users\ALKANEWDEV\Downloads\imagenes mod</ImagesSourceDir>
+      <ImagesDestDir>$(PluginDir)\AlkaSkin_Images</ImagesDestDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(ImagesDestDir)" Condition="!Exists('$(ImagesDestDir)')" />
+    <ItemGroup>
+      <HatImageFiles Include="$(ImagesSourceDir)\*.png" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HatImageFiles)" DestinationFolder="$(ImagesDestDir)" SkipUnchangedFiles="true" Condition="Exists('$(ImagesSourceDir)')" />
+    <Message Importance="high" Text="[Deploy] PNG hat images -&gt; $(ImagesDestDir)" />
+  </Target>
+</Project>

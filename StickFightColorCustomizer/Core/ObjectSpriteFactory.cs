@@ -1,0 +1,1094 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace StickFightColorCustomizer.Core
+{
+    /// <summary>
+    /// Orbes y anillos simples para levitar alrededor del personaje.
+    /// </summary>
+    public static class ObjectSpriteFactory
+    {
+        private const int ArtGeneration = 5;
+        private const float PixelsPerUnit = 32f;
+        private static readonly Dictionary<string, Sprite> Cache = new Dictionary<string, Sprite>();
+
+        public static void ClearCache()
+        {
+            Cache.Clear();
+        }
+
+        public static Sprite GetPartSprite(string objectId, int partIndex)
+        {
+            string id = ObjectsCatalog.Normalize(objectId);
+            if (id == "none")
+            {
+                return null;
+            }
+
+            ObjectsCatalogEntry entry;
+            if (!ObjectsCatalog.TryGet(id, out entry))
+            {
+                return null;
+            }
+
+            string partKey = entry.SpriteKey + "#" + partIndex + "#" + ArtGeneration;
+            Sprite sprite;
+            if (Cache.TryGetValue(partKey, out sprite) && sprite != null)
+            {
+                return sprite;
+            }
+
+            sprite = BuildSprite(entry.SpriteKey);
+            Cache[partKey] = sprite;
+            return sprite;
+        }
+
+        public static Sprite GetPreviewSprite(string objectId)
+        {
+            return GetPartSprite(objectId, 0);
+        }
+
+        private static Sprite BuildSprite(string spriteKey)
+        {
+            switch (spriteKey)
+            {
+                case "orb_white":
+                    return BuildOrb(new Color(0.92f, 0.94f, 1f, 1f), new Color(1f, 1f, 1f, 1f));
+                case "orb_cyan":
+                    return BuildOrb(new Color(0.2f, 0.75f, 0.95f, 1f), new Color(0.55f, 0.95f, 1f, 1f));
+                case "orb_gold":
+                    return BuildOrb(new Color(0.95f, 0.78f, 0.15f, 1f), new Color(1f, 0.95f, 0.45f, 1f));
+                case "orb_purple":
+                    return BuildOrb(new Color(0.45f, 0.15f, 0.75f, 1f), new Color(0.75f, 0.4f, 1f, 1f));
+                case "orb_green":
+                    return BuildOrb(new Color(0.12f, 0.78f, 0.22f, 1f), new Color(0.45f, 1f, 0.35f, 1f));
+                case "orb_red":
+                    return BuildOrb(new Color(0.85f, 0.10f, 0.08f, 1f), new Color(1f, 0.40f, 0.25f, 1f));
+                case "ring_red":
+                    return BuildRing(new Color(0.9f, 0.15f, 0.12f, 1f), new Color(1f, 0.5f, 0.35f, 1f));
+                case "ring_gold":
+                    return BuildRing(new Color(0.95f, 0.78f, 0.2f, 1f), new Color(1f, 0.95f, 0.55f, 1f));
+                case "ring_cyan":
+                    return BuildRing(new Color(0.1f, 0.70f, 0.95f, 1f), new Color(0.4f, 1f, 1f, 1f));
+                case "gem_blue":
+                    return BuildGem(new Color(0.08f, 0.30f, 0.90f, 1f), new Color(0.35f, 0.65f, 1f, 1f), new Color(0.7f, 0.88f, 1f, 1f));
+                case "gem_ruby":
+                    return BuildGem(new Color(0.75f, 0.04f, 0.04f, 1f), new Color(1f, 0.22f, 0.18f, 1f), new Color(1f, 0.65f, 0.55f, 1f));
+                case "gem_emerald":
+                    return BuildGem(new Color(0.04f, 0.50f, 0.12f, 1f), new Color(0.10f, 0.88f, 0.28f, 1f), new Color(0.55f, 1f, 0.60f, 1f));
+                case "gem_amethyst":
+                    return BuildGem(new Color(0.42f, 0.08f, 0.70f, 1f), new Color(0.70f, 0.28f, 1f, 1f), new Color(0.88f, 0.70f, 1f, 1f));
+                case "star_gold":
+                    return BuildStar(new Color(0.95f, 0.72f, 0.05f, 1f), new Color(1f, 0.96f, 0.40f, 1f));
+                case "star_white":
+                    return BuildStar(new Color(0.80f, 0.85f, 1f, 1f), new Color(1f, 1f, 1f, 1f));
+                case "plasma_blue":
+                    return BuildPlasma(new Color(0.05f, 0.25f, 1f, 1f), new Color(0.40f, 0.80f, 1f, 1f), new Color(0.85f, 0.96f, 1f, 1f));
+                case "plasma_purple":
+                    return BuildPlasma(new Color(0.50f, 0.05f, 0.90f, 1f), new Color(0.80f, 0.35f, 1f, 1f), new Color(0.96f, 0.80f, 1f, 1f));
+                case "knife_steel":
+                    return BuildKnife(new Color(0.85f, 0.86f, 0.92f, 1f), new Color(0.40f, 0.42f, 0.48f, 1f), new Color(0.45f, 0.28f, 0.10f, 1f));
+                case "knife_gold":
+                    return BuildKnife(new Color(1f, 0.92f, 0.40f, 1f), new Color(0.65f, 0.45f, 0.05f, 1f), new Color(0.20f, 0.12f, 0.05f, 1f));
+                case "shuriken_black":
+                    return BuildShuriken(new Color(0.18f, 0.18f, 0.22f, 1f), new Color(0.55f, 0.55f, 0.62f, 1f));
+                case "shuriken_red":
+                    return BuildShuriken(new Color(0.85f, 0.10f, 0.10f, 1f), new Color(1f, 0.50f, 0.30f, 1f));
+                case "sword_steel":
+                    return BuildSword(new Color(0.85f, 0.85f, 0.95f, 1f), new Color(0.40f, 0.40f, 0.50f, 1f), new Color(0.65f, 0.45f, 0.20f, 1f));
+                case "sword_fire":
+                    return BuildSword(new Color(1f, 0.60f, 0.18f, 1f), new Color(0.85f, 0.10f, 0.05f, 1f), new Color(0.25f, 0.10f, 0.04f, 1f));
+                case "kanji_red":
+                    return BuildKanji(new Color(0.92f, 0.10f, 0.10f, 1f), new Color(0.45f, 0.04f, 0.04f, 1f));
+                case "kanji_gold":
+                    return BuildKanji(new Color(1f, 0.85f, 0.20f, 1f), new Color(0.45f, 0.30f, 0.05f, 1f));
+                case "kanji_black":
+                    return BuildKanji(new Color(0.10f, 0.10f, 0.12f, 1f), new Color(0.45f, 0.45f, 0.50f, 1f));
+                case "skull_white":
+                    return BuildSkull(new Color(0.95f, 0.95f, 0.92f, 1f), new Color(0.55f, 0.55f, 0.55f, 1f), new Color(0.10f, 0.10f, 0.10f, 1f));
+                case "skull_black":
+                    return BuildSkull(new Color(0.18f, 0.18f, 0.22f, 1f), new Color(0.55f, 0.05f, 0.05f, 1f), new Color(0.95f, 0.10f, 0.05f, 1f));
+                case "heart_red":
+                    return BuildHeart(new Color(1f, 0.20f, 0.30f, 1f), new Color(0.55f, 0.04f, 0.10f, 1f));
+                case "heart_dark":
+                    return BuildHeart(new Color(0.40f, 0.04f, 0.10f, 1f), new Color(0.85f, 0.10f, 0.20f, 1f));
+                case "bolt_yellow":
+                    return BuildLightning(new Color(1f, 0.95f, 0.30f, 1f), new Color(1f, 1f, 0.85f, 1f));
+                case "bolt_cyan":
+                    return BuildLightning(new Color(0.25f, 0.90f, 1f, 1f), new Color(0.85f, 1f, 1f, 1f));
+                case "snowflake":
+                    return BuildSnowflake(new Color(0.85f, 0.95f, 1f, 1f), new Color(0.40f, 0.65f, 0.95f, 1f));
+                case "leaf_green":
+                    return BuildLeaf(new Color(0.30f, 0.80f, 0.20f, 1f), new Color(0.08f, 0.40f, 0.10f, 1f));
+                case "leaf_autumn":
+                    return BuildLeaf(new Color(1f, 0.50f, 0.10f, 1f), new Color(0.55f, 0.18f, 0.04f, 1f));
+                case "yinyang":
+                    return BuildYinYang();
+                case "cross_gold":
+                    return BuildCross(new Color(1f, 0.85f, 0.20f, 1f), new Color(0.55f, 0.35f, 0.05f, 1f));
+                case "moon_silver":
+                    return BuildMoon(new Color(0.95f, 0.95f, 0.98f, 1f), new Color(0.55f, 0.60f, 0.70f, 1f));
+                case "cross_inv_black":
+                    return BuildCrossInverted(new Color(0.12f, 0.12f, 0.14f, 1f), new Color(0.55f, 0.55f, 0.60f, 1f));
+                case "cross_inv_red":
+                    return BuildCrossInverted(new Color(0.88f, 0.08f, 0.08f, 1f), new Color(0.45f, 0.02f, 0.02f, 1f));
+                case "cross_inv_white":
+                    return BuildCrossInverted(new Color(0.95f, 0.95f, 0.98f, 1f), new Color(0.70f, 0.72f, 0.78f, 1f));
+                case "letter_x":
+                    return BuildLetterGlyph('X', new Color(0.95f, 0.35f, 1f, 1f), new Color(0.35f, 0.05f, 0.55f, 1f));
+                case "letter_o":
+                    return BuildLetterGlyph('O', new Color(1f, 0.85f, 0.25f, 1f), new Color(0.55f, 0.35f, 0.05f, 1f));
+                case "letter_z":
+                    return BuildLetterGlyph('Z', new Color(0.35f, 0.95f, 1f, 1f), new Color(0.05f, 0.35f, 0.55f, 1f));
+                case "han_red":
+                    return BuildHanBrush(new Color(0.92f, 0.12f, 0.10f, 1f), new Color(0.40f, 0.04f, 0.04f, 1f), 0);
+                case "han_gold":
+                    return BuildHanBrush(new Color(1f, 0.88f, 0.22f, 1f), new Color(0.45f, 0.30f, 0.05f, 1f), 1);
+                case "han_cyan":
+                    return BuildHanBrush(new Color(0.25f, 0.92f, 1f, 1f), new Color(0.05f, 0.35f, 0.50f, 1f), 2);
+                case "han_void":
+                    return BuildHanBrush(new Color(0.08f, 0.08f, 0.10f, 1f), new Color(0.75f, 0.15f, 0.90f, 1f), 3);
+                case "infinity":
+                    return BuildInfinity(new Color(0.85f, 0.45f, 1f, 1f), new Color(0.35f, 0.15f, 0.65f, 1f));
+                case "omega":
+                    return BuildOmega(new Color(1f, 0.92f, 0.35f, 1f), new Color(0.55f, 0.40f, 0.08f, 1f));
+                case "pentagram":
+                    return BuildPentagram(new Color(0.90f, 0.12f, 0.12f, 1f), new Color(0.55f, 0.05f, 0.05f, 1f));
+                case "wifi":
+                    return BuildWifi(new Color(0.30f, 0.95f, 1f, 1f), new Color(0.10f, 0.45f, 0.75f, 1f));
+                case "hashtag":
+                    return BuildHashtag(new Color(1f, 0.55f, 0.20f, 1f), new Color(0.55f, 0.22f, 0.05f, 1f));
+                case "smile_meme":
+                    return BuildSmileMeme();
+                case "meme_eyes":
+                    return BuildMemeEyes();
+                case "rune":
+                    return BuildRune(new Color(0.92f, 0.88f, 0.75f, 1f), new Color(0.45f, 0.38f, 0.28f, 1f));
+                case "flame_teardrop":
+                    return BuildFlameTeardrop();
+                case "mini_wing":
+                    return BuildMiniWing(new Color(0.92f, 0.94f, 1f, 1f), new Color(0.55f, 0.65f, 0.95f, 1f));
+                default:
+                    return BuildOrb(new Color(0.06f, 0.06f, 0.08f, 1f), new Color(0.35f, 0.35f, 0.42f, 1f));
+            }
+        }
+
+        private static Sprite BuildOrb(Color core, Color highlight)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float r = size * 0.36f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x, y), c) / r;
+                    if (d > 1.05f)
+                    {
+                        tex.SetPixel(x, y, Color.clear);
+                        continue;
+                    }
+
+                    Color col = Color.Lerp(core, highlight, Mathf.SmoothStep(1f, 0f, d) * 0.65f);
+                    if (d < 0.28f)
+                    {
+                        col = Color.Lerp(col, highlight, 0.75f);
+                    }
+
+                    col.a = Mathf.SmoothStep(1f, 0.82f, d);
+                    tex.SetPixel(x, y, col);
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildRing(Color inner, Color outer)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float outerR = size * 0.4f;
+            float innerR = size * 0.26f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x, y), c);
+                    if (d < innerR || d > outerR)
+                    {
+                        tex.SetPixel(x, y, Color.clear);
+                        continue;
+                    }
+
+                    float t = (d - innerR) / (outerR - innerR);
+                    tex.SetPixel(x, y, Color.Lerp(inner, outer, t));
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        /// <summary>
+        /// Diamond-cut gem: octagonal silhouette with bright facet highlights.
+        /// </summary>
+        private static Sprite BuildGem(Color deep, Color mid, Color shine)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float r = size * 0.40f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = (x - c.x) / r;
+                    float dy = (y - c.y) / r;
+                    // Diamond silhouette: |dx| + |dy| <= 1 clipped to circle
+                    float diamondDist = Mathf.Abs(dx) + Mathf.Abs(dy);
+                    float circleDist  = Mathf.Sqrt(dx * dx + dy * dy);
+                    if (diamondDist > 1.05f || circleDist > 1.05f)
+                    {
+                        tex.SetPixel(x, y, Color.clear);
+                        continue;
+                    }
+
+                    // Facet zones based on angle and radius
+                    float angle = Mathf.Atan2(dy, dx); // -pi..pi
+                    float facet = Mathf.Abs(Mathf.Sin(angle * 4f));  // 4 reflections
+
+                    // Upper-left specular highlight
+                    float specular = Mathf.Max(0f, -dx * 0.6f + -dy * 0.8f);
+                    specular = Mathf.Pow(specular, 2.2f);
+
+                    float t = Mathf.SmoothStep(0f, 1f, circleDist * 0.9f);
+                    Color col = Color.Lerp(shine, mid, t);
+                    col = Color.Lerp(col, deep, t * 0.6f);
+                    col = Color.Lerp(col, shine, facet * 0.35f);
+                    col = Color.Lerp(col, Color.white, specular * 0.65f);
+                    col.a = Mathf.Clamp01(1f - Mathf.SmoothStep(0.80f, 1.05f, circleDist)
+                                              - Mathf.SmoothStep(0.90f, 1.05f, diamondDist) * 0.5f);
+                    tex.SetPixel(x, y, col);
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        /// <summary>
+        /// 5-pointed star with glowing hot-white centre.
+        /// </summary>
+        private static Sprite BuildStar(Color outer, Color inner)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float outerR = size * 0.42f;
+            float innerR = size * 0.18f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x - c.x;
+                    float dy = y - c.y;
+                    float dist = Mathf.Sqrt(dx * dx + dy * dy);
+
+                    // Star boundary via sector interpolation
+                    float angle = Mathf.Atan2(dy, dx) + Mathf.PI * 0.5f; // 0 at top
+                    float sector = angle / (Mathf.PI * 2f / 5f);
+                    float frac = sector - Mathf.Floor(sector);
+                    // Radial limit alternates outerR and innerR
+                    float limitA = (frac < 0.5f)
+                        ? Mathf.Lerp(outerR, innerR, frac * 2f)
+                        : Mathf.Lerp(innerR, outerR, (frac - 0.5f) * 2f);
+
+                    if (dist > limitA * 1.05f)
+                    {
+                        tex.SetPixel(x, y, Color.clear);
+                        continue;
+                    }
+
+                    float t = Mathf.Clamp01(dist / Mathf.Max(limitA, 0.01f));
+                    Color col = Color.Lerp(Color.white, inner, t * 0.55f);
+                    col = Color.Lerp(col, outer, t * 0.80f);
+                    col.a = Mathf.SmoothStep(1f, 0.70f, t);
+                    // Soft glow halo just outside
+                    if (dist > limitA * 0.85f)
+                    {
+                        float glowT = (dist - limitA * 0.85f) / (limitA * 0.2f);
+                        col.a *= Mathf.SmoothStep(1f, 0f, glowT);
+                    }
+
+                    tex.SetPixel(x, y, col);
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        /// <summary>
+        /// Plasma ball: solid glowing core surrounded by a soft corona ring.
+        /// </summary>
+        private static Sprite BuildPlasma(Color core, Color mid, Color corona)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float coreR   = size * 0.22f;
+            float coronaR = size * 0.44f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x, y), c);
+                    if (d > coronaR * 1.05f)
+                    {
+                        tex.SetPixel(x, y, Color.clear);
+                        continue;
+                    }
+
+                    if (d < coreR)
+                    {
+                        // Inner hot core
+                        float t = d / coreR;
+                        Color col = Color.Lerp(Color.white, mid, t * 0.5f);
+                        col.a = 1f;
+                        tex.SetPixel(x, y, col);
+                    }
+                    else
+                    {
+                        // Corona halo
+                        float t = (d - coreR) / (coronaR - coreR);
+                        Color col = Color.Lerp(mid, corona, t * 0.7f);
+
+                        // Electric arcs: modulate with angle-based noise
+                        float angle = Mathf.Atan2(y - c.y, x - c.x);
+                        float arc = Mathf.Abs(Mathf.Sin(angle * 7f + d * 0.18f));
+                        col = Color.Lerp(col, Color.white, arc * (1f - t) * 0.45f);
+
+                        col.a = Mathf.SmoothStep(1f, 0f, t * 0.85f) *
+                                Mathf.SmoothStep(0f, 1f, 1f - t * 0.2f);
+                        tex.SetPixel(x, y, col);
+                    }
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        // ──────────────────────────────────────────────────────────────────────────────
+        //                            NEW SPRITE BUILDERS
+        //   All sprites are 64×64 with the pivot at the centre.
+        //   Coordinates: (32,32) is the centre, x grows right, y grows up.
+        // ──────────────────────────────────────────────────────────────────────────────
+
+        /// <summary>Knife: straight diagonal blade with a small handle at one end.</summary>
+        private static Sprite BuildKnife(Color blade, Color bladeDark, Color handle)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            // Blade — thin diagonal stripe with a tip
+            for (int t = 0; t < 40; t++)
+            {
+                int x = 14 + t;
+                int y = 14 + t;
+                if (x >= 0 && x < size && y >= 0 && y < size)
+                {
+                    tex.SetPixel(x, y, blade);
+                    if (x - 1 >= 0) tex.SetPixel(x - 1, y, blade);
+                    if (y - 1 >= 0) tex.SetPixel(x, y - 1, bladeDark);
+                    if (x + 1 < size) tex.SetPixel(x + 1, y, bladeDark);
+                }
+            }
+            // Tip highlight
+            for (int t = 30; t < 40; t++)
+            {
+                int x = 14 + t, y = 14 + t;
+                if (x < size - 1 && y < size - 1) tex.SetPixel(x + 1, y + 1, blade);
+            }
+            // Handle
+            for (int t = -8; t < 0; t++)
+            {
+                int x = 14 + t, y = 14 + t;
+                if (x >= 0 && y >= 0 && x < size && y < size)
+                {
+                    tex.SetPixel(x, y, handle);
+                    if (x - 1 >= 0) tex.SetPixel(x - 1, y, handle);
+                    if (y - 1 >= 0) tex.SetPixel(x, y - 1, handle);
+                }
+            }
+            // Crossguard
+            for (int k = -2; k <= 2; k++)
+            {
+                if (12 + k >= 0 && 16 + k < size) tex.SetPixel(12 + k, 16 - k, bladeDark);
+            }
+            return Finish(tex);
+        }
+
+        /// <summary>4-pointed shuriken/ninja star.</summary>
+        private static Sprite BuildShuriken(Color body, Color edge)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float arm = size * 0.42f;
+            float thickness = 4.5f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x - c.x;
+                    float dy = y - c.y;
+                    // Star: union of two perpendicular thin diamonds.
+                    bool inH = Mathf.Abs(dy) < thickness && Mathf.Abs(dx) < arm;
+                    bool inV = Mathf.Abs(dx) < thickness && Mathf.Abs(dy) < arm;
+                    // Taper: thickness shrinks toward the tip.
+                    if (inH) inH = Mathf.Abs(dy) < thickness * (1f - Mathf.Abs(dx) / arm);
+                    if (inV) inV = Mathf.Abs(dx) < thickness * (1f - Mathf.Abs(dy) / arm);
+                    if (!inH && !inV) { tex.SetPixel(x, y, Color.clear); continue; }
+                    // Centre hub
+                    float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                    Color col = dist < 6 ? edge : body;
+                    tex.SetPixel(x, y, col);
+                }
+            }
+            return Finish(tex);
+        }
+
+        /// <summary>Sword: vertical long blade with cross-guard and pommel.</summary>
+        private static Sprite BuildSword(Color blade, Color bladeDark, Color hilt)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            // Blade — vertical, tapered tip
+            for (int y = 14; y <= 52; y++)
+            {
+                int w = (y > 48) ? Mathf.Max(0, 52 - y) : 3;
+                for (int dx = -w; dx <= w; dx++)
+                {
+                    int x = 32 + dx;
+                    if (x < 0 || x >= size) continue;
+                    Color c = (dx == 0) ? blade : Color.Lerp(blade, bladeDark, Mathf.Abs(dx) / 3f);
+                    tex.SetPixel(x, y, c);
+                }
+            }
+            // Crossguard
+            for (int x = 22; x <= 42; x++) { tex.SetPixel(x, 13, hilt); tex.SetPixel(x, 12, hilt); }
+            // Grip
+            for (int y = 5; y <= 11; y++) { tex.SetPixel(31, y, hilt); tex.SetPixel(32, y, hilt); tex.SetPixel(33, y, hilt); }
+            // Pommel
+            tex.SetPixel(31, 4, hilt); tex.SetPixel(32, 3, hilt); tex.SetPixel(33, 4, hilt); tex.SetPixel(32, 4, hilt);
+            return Finish(tex);
+        }
+
+        /// <summary>Stylised Asian-ink character (cross-like brush strokes).</summary>
+        private static Sprite BuildKanji(Color ink, Color shadow)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            // Horizontal stroke
+            for (int x = 10; x <= 54; x++)
+            {
+                for (int yy = 33; yy <= 36; yy++) tex.SetPixel(x, yy, ink);
+            }
+            // Vertical stroke
+            for (int y = 12; y <= 52; y++)
+            {
+                for (int xx = 30; xx <= 33; xx++) tex.SetPixel(xx, y, ink);
+            }
+            // Top short horizontal
+            for (int x = 20; x <= 44; x++) tex.SetPixel(x, 48, ink);
+            // Bottom diagonal strokes
+            for (int t = 0; t < 12; t++)
+            {
+                tex.SetPixel(18 + t, 22 - t, ink);
+                tex.SetPixel(46 - t, 22 - t, ink);
+            }
+            // Ink bleed shadow
+            for (int x = 10; x <= 54; x++) tex.SetPixel(x, 32, shadow);
+            for (int y = 12; y <= 52; y++) tex.SetPixel(29, y, shadow);
+            return Finish(tex);
+        }
+
+        /// <summary>Pixel skull with eye sockets.</summary>
+        private static Sprite BuildSkull(Color bone, Color shadow, Color sockets)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.55f);
+            float r = size * 0.34f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = (x - c.x) / r;
+                    float dy = (y - c.y) / r;
+                    float d = Mathf.Sqrt(dx * dx + dy * dy);
+                    // Jaw extension
+                    bool inJaw = (y < c.y - r * 0.4f) && Mathf.Abs(dx) < 0.55f && (c.y - y) < r * 1.1f;
+                    if (d > 1.05f && !inJaw) { tex.SetPixel(x, y, Color.clear); continue; }
+                    Color col = d < 0.8f ? bone : shadow;
+                    if (inJaw) col = bone;
+                    tex.SetPixel(x, y, col);
+                }
+            }
+            // Eye sockets
+            FillSquare(tex, 22, 36, 28, 42, sockets);
+            FillSquare(tex, 36, 36, 42, 42, sockets);
+            // Nose
+            FillSquare(tex, 31, 28, 33, 32, sockets);
+            // Teeth lines
+            for (int x = 24; x <= 40; x += 3) FillSquare(tex, x, 18, x, 24, shadow);
+            return Finish(tex);
+        }
+
+        /// <summary>Classic heart shape.</summary>
+        private static Sprite BuildHeart(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.45f);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = (x - c.x) / (size * 0.32f);
+                    float dy = (c.y - y) / (size * 0.32f);
+                    // Heart implicit eq: (x^2 + y^2 - 1)^3 - x^2 * y^3 <= 0
+                    float term = dx * dx + dy * dy - 1f;
+                    float val = term * term * term - dx * dx * dy * dy * dy;
+                    if (val > 0f) { tex.SetPixel(x, y, Color.clear); continue; }
+                    // Specular highlight upper-left
+                    float spec = Mathf.Max(0f, -dx * 0.7f + dy * 0.5f);
+                    Color col = Color.Lerp(lo, hi, Mathf.Clamp01(spec + 0.55f));
+                    tex.SetPixel(x, y, col);
+                }
+            }
+            return Finish(tex);
+        }
+
+        /// <summary>Lightning bolt — zig-zag.</summary>
+        private static Sprite BuildLightning(Color body, Color glow)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            // Zig-zag path with width
+            int[] xs = { 40, 28, 36, 24 };
+            int[] ys = { 56,  40, 30, 8 };
+            for (int seg = 0; seg < xs.Length - 1; seg++)
+            {
+                int x0 = xs[seg], y0 = ys[seg], x1 = xs[seg + 1], y1 = ys[seg + 1];
+                int steps = Mathf.Max(Mathf.Abs(x1 - x0), Mathf.Abs(y1 - y0));
+                for (int s = 0; s <= steps; s++)
+                {
+                    float t = s / (float)steps;
+                    int px = Mathf.RoundToInt(Mathf.Lerp(x0, x1, t));
+                    int py = Mathf.RoundToInt(Mathf.Lerp(y0, y1, t));
+                    for (int wx = -3; wx <= 3; wx++)
+                    {
+                        for (int wy = -3; wy <= 3; wy++)
+                        {
+                            int xx = px + wx, yy = py + wy;
+                            if (xx < 0 || yy < 0 || xx >= size || yy >= size) continue;
+                            float d = Mathf.Sqrt(wx * wx + wy * wy);
+                            if (d < 1.6f) tex.SetPixel(xx, yy, body);
+                            else if (d < 3.0f) tex.SetPixel(xx, yy, glow);
+                        }
+                    }
+                }
+            }
+            return Finish(tex);
+        }
+
+        /// <summary>6-pointed snowflake.</summary>
+        private static Sprite BuildSnowflake(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float arm = size * 0.42f;
+            // 6 arms at 60° increments
+            for (int a = 0; a < 6; a++)
+            {
+                float ang = a * Mathf.PI / 3f;
+                float cx = Mathf.Cos(ang), sy = Mathf.Sin(ang);
+                for (float t = 0; t < arm; t += 0.5f)
+                {
+                    int px = Mathf.RoundToInt(c.x + cx * t);
+                    int py = Mathf.RoundToInt(c.y + sy * t);
+                    if (px < 0 || py < 0 || px >= size || py >= size) continue;
+                    tex.SetPixel(px, py, hi);
+                    if (px + 1 < size) tex.SetPixel(px + 1, py, lo);
+                    if (py + 1 < size) tex.SetPixel(px, py + 1, lo);
+                }
+                // Branch barbs at 3 distances along the arm
+                for (int br = 1; br <= 3; br++)
+                {
+                    float t = arm * 0.3f * br;
+                    int px = Mathf.RoundToInt(c.x + cx * t);
+                    int py = Mathf.RoundToInt(c.y + sy * t);
+                    float bAng1 = ang + Mathf.PI / 6f;
+                    float bAng2 = ang - Mathf.PI / 6f;
+                    for (float bt = 0; bt < arm * 0.18f; bt += 0.5f)
+                    {
+                        int bx1 = Mathf.RoundToInt(px + Mathf.Cos(bAng1) * bt);
+                        int by1 = Mathf.RoundToInt(py + Mathf.Sin(bAng1) * bt);
+                        int bx2 = Mathf.RoundToInt(px + Mathf.Cos(bAng2) * bt);
+                        int by2 = Mathf.RoundToInt(py + Mathf.Sin(bAng2) * bt);
+                        if (bx1 >= 0 && by1 >= 0 && bx1 < size && by1 < size) tex.SetPixel(bx1, by1, lo);
+                        if (bx2 >= 0 && by2 >= 0 && bx2 < size && by2 < size) tex.SetPixel(bx2, by2, lo);
+                    }
+                }
+            }
+            // Centre dot
+            FillSquare(tex, 30, 30, 34, 34, hi);
+            return Finish(tex);
+        }
+
+        /// <summary>Stylised leaf / petal shape.</summary>
+        private static Sprite BuildLeaf(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float u = (x - size * 0.5f) / (size * 0.35f);
+                    float v = (y - size * 0.5f) / (size * 0.45f);
+                    // Pointed-oval (leaf) implicit boundary: u^2 + v^2 - |v| < 0.6
+                    float val = u * u + v * v - Mathf.Abs(v) * 0.6f - 0.55f;
+                    if (val > 0f) { tex.SetPixel(x, y, Color.clear); continue; }
+                    Color col = Color.Lerp(lo, hi, Mathf.Clamp01(0.5f + u * 0.5f));
+                    tex.SetPixel(x, y, col);
+                }
+            }
+            // Veins
+            for (int y = 12; y <= 52; y++) tex.SetPixel(32, y, lo);
+            for (int t = 0; t < 8; t++)
+            {
+                tex.SetPixel(32 - t, 36 + t, lo);
+                tex.SetPixel(32 + t, 36 + t, lo);
+                tex.SetPixel(32 - t, 26 + t, lo);
+                tex.SetPixel(32 + t, 26 + t, lo);
+            }
+            return Finish(tex);
+        }
+
+        /// <summary>Yin-yang circle.</summary>
+        private static Sprite BuildYinYang()
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float r = size * 0.42f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x - c.x;
+                    float dy = y - c.y;
+                    float d = Mathf.Sqrt(dx * dx + dy * dy);
+                    if (d > r) { tex.SetPixel(x, y, Color.clear); continue; }
+                    // Two smaller circles to make the S-curve.
+                    bool whiteHalf = dx > 0f;
+                    float dCircleTop = Mathf.Sqrt(dx * dx + (dy - r * 0.5f) * (dy - r * 0.5f));
+                    float dCircleBot = Mathf.Sqrt(dx * dx + (dy + r * 0.5f) * (dy + r * 0.5f));
+                    if (dCircleTop < r * 0.5f) whiteHalf = false;
+                    if (dCircleBot < r * 0.5f) whiteHalf = true;
+                    Color col = whiteHalf ? Color.white : new Color(0.06f, 0.06f, 0.08f, 1f);
+                    // Dots
+                    if (dCircleTop < r * 0.16f) col = new Color(0.06f, 0.06f, 0.08f, 1f);
+                    if (dCircleBot < r * 0.16f) col = Color.white;
+                    tex.SetPixel(x, y, col);
+                }
+            }
+            return Finish(tex);
+        }
+
+        /// <summary>Cross/crucifix shape with bevel.</summary>
+        private static Sprite BuildCross(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            // Vertical bar
+            FillSquare(tex, 28, 8, 36, 56, hi);
+            FillSquare(tex, 29, 8, 35, 55, lo);
+            FillSquare(tex, 30, 8, 34, 54, hi);
+            // Horizontal bar
+            FillSquare(tex, 14, 36, 50, 44, hi);
+            FillSquare(tex, 14, 37, 50, 43, lo);
+            FillSquare(tex, 14, 38, 50, 42, hi);
+            return Finish(tex);
+        }
+
+        /// <summary>Crescent moon (outline-circle minus offset circle).</summary>
+        private static Sprite BuildMoon(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.45f, size * 0.5f);
+            Vector2 c2 = new Vector2(size * 0.58f, size * 0.5f);
+            float r = size * 0.40f;
+            float r2 = size * 0.38f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d1 = Vector2.Distance(new Vector2(x, y), c);
+                    float d2 = Vector2.Distance(new Vector2(x, y), c2);
+                    if (d1 > r || d2 < r2) { tex.SetPixel(x, y, Color.clear); continue; }
+                    Color col = Color.Lerp(hi, lo, d1 / r);
+                    tex.SetPixel(x, y, col);
+                }
+            }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildCrossInverted(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            FillSquare(tex, 28, 4, 36, 48, hi);
+            FillSquare(tex, 29, 4, 35, 47, lo);
+            FillSquare(tex, 14, 32, 50, 40, hi);
+            FillSquare(tex, 14, 33, 50, 39, lo);
+            return Finish(tex);
+        }
+
+        private static Sprite BuildLetterGlyph(char letter, Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            if (letter == 'X')
+            {
+                for (int i = 0; i < 40; i++)
+                {
+                    int o = i / 2;
+                    tex.SetPixel(14 + o, 12 + o, hi);
+                    tex.SetPixel(50 - o, 12 + o, hi);
+                    tex.SetPixel(15 + o, 13 + o, lo);
+                    tex.SetPixel(49 - o, 13 + o, lo);
+                }
+            }
+            else if (letter == 'O')
+            {
+                Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+                float rOut = size * 0.28f;
+                float rIn = size * 0.16f;
+                for (int y = 0; y < size; y++)
+                {
+                    for (int x = 0; x < size; x++)
+                    {
+                        float d = Vector2.Distance(new Vector2(x, y), c);
+                        if (d > rOut || d < rIn) { tex.SetPixel(x, y, Color.clear); continue; }
+                        tex.SetPixel(x, y, Color.Lerp(lo, hi, d < (rIn + rOut) * 0.5f ? 1f : 0.4f));
+                    }
+                }
+            }
+            else
+            {
+                for (int y = 14; y <= 48; y++)
+                {
+                    int top = 48 - (y - 14);
+                    int x0 = 16 + (48 - y) / 3;
+                    int x1 = 48 - (48 - y) / 3;
+                    for (int x = x0; x <= x1; x++)
+                    {
+                        tex.SetPixel(x, y, hi);
+                    }
+                }
+
+                for (int x = 16; x <= 48; x++) { tex.SetPixel(x, 14, hi); }
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildHanBrush(Color ink, Color accent, int variant)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            if (variant == 0)
+            {
+                for (int x = 12; x <= 52; x++) { tex.SetPixel(x, 34, ink); tex.SetPixel(x, 35, ink); }
+                for (int y = 14; y <= 50; y++) { tex.SetPixel(32, y, ink); tex.SetPixel(33, y, ink); }
+            }
+            else if (variant == 1)
+            {
+                for (int t = 0; t < 20; t++) { tex.SetPixel(20 + t, 40 - t / 2, ink); tex.SetPixel(44 - t, 40 - t / 2, ink); }
+                for (int x = 18; x <= 46; x++) tex.SetPixel(x, 22, ink);
+            }
+            else if (variant == 2)
+            {
+                FillSquare(tex, 22, 18, 42, 46, ink);
+                tex.SetPixel(32, 28, accent);
+                for (int x = 26; x <= 38; x++) tex.SetPixel(x, 36, accent);
+            }
+            else
+            {
+                for (int y = 16; y <= 48; y++) { tex.SetPixel(20, y, ink); tex.SetPixel(44, y, ink); }
+                for (int x = 20; x <= 44; x++) { tex.SetPixel(x, 24, ink); tex.SetPixel(x, 40, ink); }
+                tex.SetPixel(32, 32, accent);
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildInfinity(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float u = (x - c.x) / (size * 0.22f);
+                    float v = (y - c.y) / (size * 0.18f);
+                    float val = u * u * v * v - (u * u + v * v - 1f);
+                    if (val > 0.12f) { tex.SetPixel(x, y, Color.clear); continue; }
+                    tex.SetPixel(x, y, Color.Lerp(lo, hi, Mathf.Abs(val) * 8f));
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildOmega(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.42f);
+            float r = size * 0.30f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x, y), c);
+                    if (d < r * 0.55f || d > r) { tex.SetPixel(x, y, Color.clear); continue; }
+                    tex.SetPixel(x, y, Color.Lerp(lo, hi, 1f - Mathf.Abs(d - r * 0.78f) / (r * 0.25f)));
+                }
+            }
+
+            FillSquare(tex, 30, 8, 34, 18, hi);
+            return Finish(tex);
+        }
+
+        private static Sprite BuildPentagram(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.52f);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x - c.x;
+                    float dy = y - c.y;
+                    float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                    float angle = Mathf.Atan2(dy, dx) + Mathf.PI * 0.5f;
+                    float sector = angle / (Mathf.PI * 2f / 5f);
+                    float frac = sector - Mathf.Floor(sector);
+                    float limitA = frac < 0.5f ? Mathf.Lerp(size * 0.40f, size * 0.14f, frac * 2f)
+                        : Mathf.Lerp(size * 0.14f, size * 0.40f, (frac - 0.5f) * 2f);
+                    if (dist > limitA * 1.05f) { tex.SetPixel(x, y, Color.clear); continue; }
+                    tex.SetPixel(x, y, Color.Lerp(lo, hi, Mathf.Clamp01(dist / limitA)));
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildWifi(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, 16f);
+            tex.SetPixel(32, 14, hi);
+            tex.SetPixel(31, 15, hi);
+            tex.SetPixel(33, 15, hi);
+            for (int ring = 1; ring <= 3; ring++)
+            {
+                float r = ring * 10f;
+                for (float a = 0.2f; a < Mathf.PI - 0.2f; a += 0.08f)
+                {
+                    int px = Mathf.RoundToInt(c.x + Mathf.Cos(a + Mathf.PI) * r);
+                    int py = Mathf.RoundToInt(c.y + Mathf.Sin(a) * r);
+                    if (px >= 0 && py >= 0 && px < size && py < size)
+                    {
+                        tex.SetPixel(px, py, ring == 3 ? hi : Color.Lerp(lo, hi, ring / 3f));
+                    }
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildHashtag(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            FillSquare(tex, 18, 22, 22, 42, hi);
+            FillSquare(tex, 42, 22, 46, 42, hi);
+            FillSquare(tex, 26, 14, 38, 18, hi);
+            FillSquare(tex, 26, 46, 38, 50, hi);
+            FillSquare(tex, 19, 23, 21, 41, lo);
+            FillSquare(tex, 43, 23, 45, 41, lo);
+            return Finish(tex);
+        }
+
+        private static Sprite BuildSmileMeme()
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float r = size * 0.36f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x, y), c);
+                    if (d > r) { tex.SetPixel(x, y, Color.clear); continue; }
+                    tex.SetPixel(x, y, new Color(1f, 0.92f, 0.15f, 1f));
+                }
+            }
+
+            FillSquare(tex, 20, 38, 26, 44, Color.black);
+            FillSquare(tex, 38, 38, 44, 44, Color.black);
+            for (int x = 18; x <= 46; x++)
+            {
+                int y = 18 + Mathf.Abs(x - 32) / 4;
+                tex.SetPixel(x, y, Color.black);
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildMemeEyes()
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.5f);
+            float r = size * 0.34f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x, y), c);
+                    if (d > r) { tex.SetPixel(x, y, Color.clear); continue; }
+                    tex.SetPixel(x, y, Color.white);
+                }
+            }
+
+            DrawSpiralEye(tex, 22, 36, 8);
+            DrawSpiralEye(tex, 42, 36, 8);
+            return Finish(tex);
+        }
+
+        private static void DrawSpiralEye(Texture2D tex, int cx, int cy, int radius)
+        {
+            for (float t = 0; t < 18f; t += 0.35f)
+            {
+                int px = cx + Mathf.RoundToInt(Mathf.Cos(t) * t * 0.35f);
+                int py = cy + Mathf.RoundToInt(Mathf.Sin(t) * t * 0.35f);
+                for (int dx = -2; dx <= 2; dx++)
+                {
+                    for (int dy = -2; dy <= 2; dy++)
+                    {
+                        int x = px + dx;
+                        int y = py + dy;
+                        if (x >= 0 && y >= 0 && x < tex.width && y < tex.height)
+                        {
+                            tex.SetPixel(x, y, Color.black);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static Sprite BuildRune(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            for (int y = 10; y <= 50; y++) { tex.SetPixel(32, y, hi); tex.SetPixel(33, y, lo); }
+            for (int x = 18; x <= 46; x += 2) { tex.SetPixel(x, 48, hi); }
+            for (int t = 0; t < 14; t++) { tex.SetPixel(24 + t, 48 - t, hi); tex.SetPixel(40 - t, 48 - t, hi); }
+            return Finish(tex);
+        }
+
+        private static Sprite BuildFlameTeardrop()
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            Vector2 c = new Vector2(size * 0.5f, size * 0.55f);
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = (x - c.x) / (size * 0.22f);
+                    float dy = (c.y - y) / (size * 0.45f);
+                    float val = dx * dx + dy * dy * 0.6f - 1f;
+                    if (val > 0.15f) { tex.SetPixel(x, y, Color.clear); continue; }
+                    Color col = Color.Lerp(new Color(1f, 0.35f, 0.05f, 1f), new Color(1f, 0.95f, 0.35f, 1f), dy);
+                    tex.SetPixel(x, y, col);
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        private static Sprite BuildMiniWing(Color hi, Color lo)
+        {
+            const int size = 64;
+            Texture2D tex = NewTexture(size);
+            for (int y = 20; y <= 44; y++)
+            {
+                int spread = (y - 20) / 2;
+                for (int x = 32 - spread; x <= 32 + spread; x++)
+                {
+                    tex.SetPixel(x, y, Color.Lerp(lo, hi, (y - 20) / 24f));
+                }
+            }
+
+            return Finish(tex);
+        }
+
+        private static void FillSquare(Texture2D tex, int x0, int y0, int x1, int y1, Color c)
+        {
+            int xMin = Mathf.Min(x0, x1), xMax = Mathf.Max(x0, x1);
+            int yMin = Mathf.Min(y0, y1), yMax = Mathf.Max(y0, y1);
+            for (int y = yMin; y <= yMax; y++)
+                for (int x = xMin; x <= xMax; x++)
+                    if (x >= 0 && y >= 0 && x < tex.width && y < tex.height)
+                        tex.SetPixel(x, y, c);
+        }
+
+        private static Texture2D NewTexture(int size)
+        {
+            Texture2D tex = new Texture2D(size, size, TextureFormat.ARGB32, false);
+            Color[] clear = new Color[size * size];
+            for (int i = 0; i < clear.Length; i++)
+            {
+                clear[i] = Color.clear;
+            }
+
+            tex.SetPixels(clear);
+            return tex;
+        }
+
+        private static Sprite Finish(Texture2D tex)
+        {
+            tex.Apply();
+            tex.filterMode = FilterMode.Bilinear;
+            tex.wrapMode = TextureWrapMode.Clamp;
+            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), PixelsPerUnit);
+        }
+    }
+}

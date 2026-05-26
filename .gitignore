@@ -1,0 +1,34 @@
+# Build
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.cache
+*.pdb
+*.bak
+
+# IDE
+.vs/
+.idea/
+*.DotSettings.user
+
+# Game reference DLLs (copy locally — do not commit)
+StickFightColorCustomizer/Deps/*.dll
+StickFightColorCustomizer.BepInEx/Deps/*.dll
+
+# OS / tools
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Cursor / local
+.cursor/
+agent-tools/
+agent-transcripts/
+
+# Optional local deploy artifacts
+**/StickFightColorCustomizer-INSTALAR.dll
+
+# Optional local hat PNGs (copyright — keep out of repo)
+StickFightColorCustomizer/AlkaSkin_Images/*.png
+StickFightColorCustomizer/AlkaSkin_Images/*.PNG

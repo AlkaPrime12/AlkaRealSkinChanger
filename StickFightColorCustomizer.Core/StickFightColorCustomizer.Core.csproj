@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Biblioteca compartida: misma logica que Hosting/ColorCustomizerApp + carpetas Core/Network/UI/Patches.
+     MelonLoader y BepInEx compilan el codigo via link o referencia; este proyecto documenta el nucleo sin MelonLoader. -->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration>Release</Configuration>
+    <Platform>AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <AssemblyName>StickFightColorCustomizer.Core</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony" HintPath="..\StickFightColorCustomizer\Deps\0Harmony.dll" Private="false" />
+    <Reference Include="Assembly-CSharp" HintPath="..\StickFightColorCustomizer\Deps\Assembly-CSharp.dll" Private="false" />
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="..\StickFightColorCustomizer\Deps\Assembly-CSharp-firstpass.dll" Private="false" />
+    <Reference Include="UnityEngine" HintPath="..\StickFightColorCustomizer\Deps\UnityEngine.dll" Private="false" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\StickFightColorCustomizer\**\*.cs" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Remove="..\StickFightColorCustomizer\ColorCustomizerMod.cs" />
+    <Compile Remove="..\StickFightColorCustomizer\Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

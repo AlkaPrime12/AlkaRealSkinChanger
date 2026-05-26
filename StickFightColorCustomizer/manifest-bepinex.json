@@ -1,0 +1,20 @@
+{
+  "name": "AlkaSkin",
+  "version": "2.3.0",
+  "description": "AlkaSkin color customizer for Stick Fight (BepInEx 5.x x86)",
+  "author": "alka",
+  "loader": "bepinex",
+  "dependencies": {
+    "BepInEx": "5.4.x",
+    "architecture": "x86"
+  },
+  "files": [
+    "BepInEx/plugins/AlkaSkin/AlkaSkin.dll"
+  ],
+  "protocol": {
+    "lobby_color": "sfcc",
+    "lobby_presence": "sfcc_ok",
+    "lobby_version": "sfcc_ver",
+    "ping_magic": "0x53464343"
+  }
+}

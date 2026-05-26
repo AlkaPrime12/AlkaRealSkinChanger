@@ -1,0 +1,124 @@
+Alka Real Skin Changer — License & Terms
+========================================
+
+Copyright (c) 2025–2026 alka (AlkaPrime12)
+https://github.com/AlkaPrime12/AlkaRealSkinChanger
+
+All rights reserved except as explicitly granted below.
+
+
+1. GAME & THIRD-PARTY PROPERTY
+------------------------------
+
+"Stick Fight: The Game" and all related game assets, names, logos, and
+trademarks are the property of Landfall West / Landfall Games and their
+licensors. This mod is UNOFFICIAL and NOT endorsed by Landfall.
+
+Harmony, MelonLoader, BepInEx, and Unity are property of their respective
+owners. This project is not affiliated with those projects except as a
+consumer of their APIs.
+
+
+2. WHAT THIS LICENSE COVERS
+---------------------------
+
+This license applies to the source code and documentation in this
+repository (the "Software"). Pre-built binaries distributed by the author
+are subject to the same attribution and redistribution rules unless
+stated otherwise in a release note.
+
+
+3. PERMITTED USE (SOURCE CODE)
+------------------------------
+
+You MAY:
+
+  (a) Use, study, modify, and distribute the Software (source or
+      derivatives) for non-commercial purposes;
+
+  (b) Include the Software in free, open fan projects related to
+      Stick Fight or modding;
+
+  (c) Publish forks or ports on GitHub or similar platforms,
+
+PROVIDED THAT you meet ALL of the following:
+
+  (i)   Give clear credit to **alka** as the original author;
+
+  (ii)  Link to the official repository:
+        https://github.com/AlkaPrime12/AlkaRealSkinChanger
+
+  (iii) State that your work is unofficial and not affiliated with
+        Landfall; and
+
+  (iv)  EITHER include the above credit prominently in your README /
+        about screen, OR notify the author on Discord **tyralka0660**
+        before your first public release of a derivative.
+
+
+4. COMMERCIAL USE & UNAUTHORIZED DISTRIBUTION
+---------------------------------------------
+
+You MAY NOT without prior written permission from alka:
+
+  (a) Sell, paywall, or license the Software or compiled mod binaries
+      for money or other compensation;
+
+  (b) Upload builds to paid mod platforms, cheat sites, or file hosts
+      used primarily for monetized redistribution;
+
+  (c) Claim ownership of the Software or present it as an official
+      Landfall / Stick Fight product.
+
+Unauthorized commercial distribution or misrepresentation may be treated
+as misuse of private developer content and may result in takedown
+requests, platform reports, and other legal remedies available to the
+author under applicable law.
+
+
+5. BINARY / RELEASE DISTRIBUTION
+--------------------------------
+
+Official releases are distributed only through channels published by
+**alka** (this GitHub repository and links the author provides).
+
+Re-hosting release binaries is allowed only if you:
+
+  - Do not charge for downloads;
+  - Keep credits intact;
+  - Link to the official repository; and
+  - Do not bundle malware or unrelated paid content.
+
+Prefer pointing users to the official repo instead of mirroring.
+
+
+6. HD HAT IMAGES & USER CONTENT
+-------------------------------
+
+PNG files in `AlkaSkin_Images/` (when used) are end-user supplied or
+author-provided optional assets. You are responsible for ensuring you
+have the right to use any artwork you add. Do not commit or redistribute
+copyrighted character art without permission.
+
+
+7. DISCLAIMER OF WARRANTY
+-------------------------
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY ARISING FROM USE OF THE SOFTWARE OR PLAYING MODIFIED GAME
+CLIENTS, INCLUDING ONLINE BANS, CRASHES, OR DATA LOSS.
+
+
+8. CONTACT
+----------
+
+Author: alka (AlkaPrime12)
+Discord: tyralka0660
+Repository: https://github.com/AlkaPrime12/AlkaRealSkinChanger
+
+For commercial licensing, partnership, or takedown inquiries, contact the
+author via Discord or GitHub Issues.

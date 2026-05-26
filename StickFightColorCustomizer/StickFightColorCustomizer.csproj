@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+
+    <ProjectGuid>{B2C3D4E5-F6A7-8901-BCDE-F12345678901}</ProjectGuid>
+
+    <OutputType>Library</OutputType>
+
+    <RootNamespace>StickFightColorCustomizer</RootNamespace>
+
+    <AssemblyName>AlkaRealSkinChanger</AssemblyName>
+
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+
+    <FileAlignment>512</FileAlignment>
+
+    <LangVersion>latest</LangVersion>
+
+    <StickFightDir Condition=" '$(StickFightDir)' == '' ">C:\Program Files (x86)\Steam\steamapps\common\StickFightTheGame</StickFightDir>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+
+    <DebugSymbols>true</DebugSymbols>
+
+    <DebugType>full</DebugType>
+
+    <Optimize>false</Optimize>
+
+    <OutputPath>bin\Debug\</OutputPath>
+
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+
+    <PlatformTarget>x86</PlatformTarget>
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+
+    <DebugType>pdbonly</DebugType>
+
+    <Optimize>true</Optimize>
+
+    <OutputPath>bin\Release\</OutputPath>
+
+    <DefineConstants>TRACE</DefineConstants>
+
+    <PlatformTarget>x86</PlatformTarget>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+
+    <Reference Include="0Harmony">
+
+      <HintPath>Deps\0Harmony.dll</HintPath>
+
+      <Private>False</Private>
+
+    </Reference>
+
+    <Reference Include="Assembly-CSharp">
+
+      <HintPath>Deps\Assembly-CSharp.dll</HintPath>
+
+      <Private>False</Private>
+
+    </Reference>
+
+    <Reference Include="Assembly-CSharp-firstpass">
+
+      <HintPath>Deps\Assembly-CSharp-firstpass.dll</HintPath>
+
+      <Private>False</Private>
+
+    </Reference>
+
+    <Reference Include="MelonLoader">
+
+      <HintPath>Deps\MelonLoader.dll</HintPath>
+
+      <Private>False</Private>
+
+    </Reference>
+
+    <Reference Include="System" />
+
+    <Reference Include="System.Core" />
+
+    <Reference Include="UnityEngine">
+
+      <HintPath>Deps\UnityEngine.dll</HintPath>
+
+      <Private>False</Private>
+
+    </Reference>
+
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <Compile Include="Properties\AssemblyInfo.cs" />
+
+    <Compile Include="Models\StickColorPart.cs" />
+
+    <Compile Include="Models\BodyColors.cs" />
+
+    <Compile Include="Models\GlowSettings.cs" />
+
+    <Compile Include="Models\HatSettings.cs" />
+
+    <Compile Include="Models\ShoeSettings.cs" />
+    <Compile Include="Models\TopsSettings.cs" />
+    <Compile Include="Models\ObjectSettings.cs" />
+    <Compile Include="Models\WingSettings.cs" />
+
+    <Compile Include="Models\WeaponColorSettings.cs" />
+
+    <Compile Include="Models\ColorConfig.cs" />
+    <Compile Include="Models\MenuLanguage.cs" />
+    <Compile Include="Models\StyleSlotManifest.cs" />
+
+    <Compile Include="Core\ColorUtil.cs" />
+
+    <Compile Include="Core\ModBranding.cs" />
+    <Compile Include="Core\ModStoragePaths.cs" />
+    <Compile Include="Core\ColorConfigStore.cs" />
+
+    <Compile Include="Core\LocalPlayerResolver.cs" />
+
+    <Compile Include="Core\BoneColorSplitter.cs" />
+    <Compile Include="Core\BoneIndexCache.cs" />
+
+    <Compile Include="Core\HalfColorCache.cs" />
+
+    <Compile Include="Core\LineMaintainThrottle.cs" />
+    <Compile Include="Core\LineMaintainBudget.cs" />
+
+    <Compile Include="Core\GlowAuraThrottle.cs" />
+    <Compile Include="Core\GlowSyncBudget.cs" />
+
+    <Compile Include="Core\ModFeatureGate.cs" />
+
+    <Compile Include="Core\HatCatalog.cs" />
+
+    <Compile Include="Core\HatMeshFactory.cs" />
+
+    <Compile Include="Core\HatSpriteFactory.cs" />
+    <Compile Include="Core\HatCategoryCatalog.cs" />
+    <Compile Include="Core\HatAttachKind.cs" />
+    <Compile Include="Core\HatSpriteFactorySimple.cs" />
+    <Compile Include="Core\HatSpriteFactorySimplePlus.cs" />
+    <Compile Include="Core\ShoeFeatureFlags.cs" />
+    <Compile Include="Core\TopsFeatureFlags.cs" />
+    <Compile Include="Core\ObjectFeatureFlags.cs" />
+    <Compile Include="Core\WingFeatureFlags.cs" />
+
+    <Compile Include="Core\HatAttachmentRenderer.cs" />
+
+    <Compile Include="Core\ShoeCatalog.cs" />
+
+    <Compile Include="Core\ShoeSpriteFactory.cs" />
+
+    <Compile Include="Core\CosmeticAttachDiagnostics.cs" />
+    <Compile Include="Core\CosmeticFollowPivot.cs" />
+    <Compile Include="Core\CosmeticBoneFilter.cs" />
+    <Compile Include="Core\CosmeticBillboard.cs" />
+    <Compile Include="Core\CosmeticBoneLineMirror.cs" />
+    <Compile Include="Core\CosmeticBoneSpriteAttach.cs" />
+    <Compile Include="Core\CosmeticLineAttachUtil.cs" />
+    <Compile Include="Core\ShoeAttachmentRenderer.cs" />
+    <Compile Include="Core\TopsCatalog.cs" />
+    <Compile Include="Core\TopsSpriteFactory.cs" />
+    <Compile Include="Core\TopsAttachmentRenderer.cs" />
+    <Compile Include="Core\ObjectsCatalog.cs" />
+    <Compile Include="Core\ObjectSpriteFactory.cs" />
+    <Compile Include="Core\ObjectsAttachmentRenderer.cs" />
+    <Compile Include="Core\WingCatalog.cs" />
+    <Compile Include="Core\WingCosmeticRenderer.cs" />
+
+    <Compile Include="Core\WeaponColorResolver.cs" />
+
+    <Compile Include="Core\WeaponColorApplier.cs" />
+
+    <Compile Include="Core\GlowTextureFactory.cs" />
+    <Compile Include="Core\GlowPresetTuning.cs" />
+
+    <Compile Include="Core\GlowAuraRenderer.cs" />
+
+    <Compile Include="Network\GameNetworkCache.cs" />
+    <Compile Include="Network\PlayerSlotCache.cs" />
+    <Compile Include="Network\ModPresenceRegistry.cs" />
+    <Compile Include="Network\NetworkSyncDiagnostics.cs" />
+    <Compile Include="Network\MatchEntryColorScheduler.cs" />
+    <Compile Include="Network\MatchBootstrap.cs" />
+    <Compile Include="Network\ModColorPingSync.cs" />
+    <Compile Include="Network\LobbySyncScheduler.cs" />
+    <Compile Include="Network\LobbyRemotePaintPolicy.cs" />
+    <Compile Include="Network\RemoteApplyGate.cs" />
+    <Compile Include="Network\PeerModLogger.cs" />
+    <Compile Include="Network\LobbyPerformance.cs" />
+    <Compile Include="Network\MatchSessionState.cs" />
+    <Compile Include="Network\SpawnBurstCoordinator.cs" />
+
+    <Compile Include="Core\PlayerColorApplier.cs" />
+
+    <Compile Include="Core\MultiplayerCompat.cs" />
+    <Compile Include="Core\ColorPresets.cs" />
+    <Compile Include="Core\StylePresets.cs" />
+    <Compile Include="Core\WeaponPresets.cs" />
+    <Compile Include="Core\StyleSlotStore.cs" />
+    <Compile Include="Core\MenuLocalization.cs" />
+
+    <Compile Include="Core\MaterialColorHelper.cs" />
+    <Compile Include="Core\StickLineUtil.cs" />
+
+    <Compile Include="Core\VanillaSkinBridge.cs" />
+
+    <Compile Include="Network\SteamReadyHelper.cs" />
+    <Compile Include="Network\SteamApiGuard.cs" />
+
+    <Compile Include="Network\ColorSyncCodec.cs" />
+
+    <Compile Include="Network\HatSyncCodec.cs" />
+
+    <Compile Include="Network\RemoteHatRegistry.cs" />
+
+    <Compile Include="Network\ShoeSyncCodec.cs" />
+
+    <Compile Include="Network\RemoteShoeRegistry.cs" />
+
+    <Compile Include="Network\ObjectSyncCodec.cs" />
+
+    <Compile Include="Network\RemoteObjectRegistry.cs" />
+
+    <Compile Include="Network\RemoteColorRegistry.cs" />
+
+    <Compile Include="Network\NetworkPlayerIndexResolver.cs" />
+
+    <Compile Include="Network\SteamLobbyColorSync.cs" />
+
+    <Compile Include="Network\ColorPingPacket.cs" />
+
+    <Compile Include="Network\ColorBroadcastService.cs" />
+
+    <Compile Include="UI\GuiFocusHelper.cs" />
+    <Compile Include="UI\HexInputHelper.cs" />
+    <Compile Include="Core\SkinShareCodec.cs" />
+    <Compile Include="UI\ColorMenuTheme.cs" />
+    <Compile Include="UI\ColorMenuLayout.cs" />
+
+    <Compile Include="UI\ColorMenuGUI.cs" />
+    <Compile Include="UI\ColorPickerPanel.cs" />
+    <Compile Include="UI\ColorWheelTexture.cs" />
+
+    <Compile Include="Patches\SpawnColorPatches.cs" />
+
+    <Compile Include="Patches\SetLinePositionsPatch.cs" />
+
+    <Compile Include="Patches\LobbyColorPatches.cs" />
+
+    <Compile Include="Patches\WeaponColorPatches.cs" />
+
+    <Compile Include="Core\HatImageLoader.cs" />
+
+    <Compile Include="Core\PlayerFacingTracker.cs" />
+
+    <Compile Include="Core\GlowStyleModulator.cs" />
+
+    <Compile Include="Core\ModLog.cs" />
+    <Compile Include="Hosting\ColorCustomizerApp.cs" />
+    <Compile Include="ColorCustomizerMod.cs" />
+
+  </ItemGroup>
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <PropertyGroup>
+
+    <ModsDir>$(StickFightDir)\Mods</ModsDir>
+
+  </PropertyGroup>
+
+  <Target Name="DeployToMods" AfterTargets="Build">
+
+    <MakeDir Directories="$(ModsDir)" Condition="!Exists('$(ModsDir)')" />
+
+    <Delete Files="$(ModsDir)\StickFightColorCustomizer.dll" Condition="Exists('$(ModsDir)\StickFightColorCustomizer.dll')" />
+
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsDir)" SkipUnchangedFiles="false" />
+
+    <Message Importance="high" Text="[Deploy] $(TargetFileName) -&gt; $(ModsDir)" />
+
+    <!-- Deploy PNG hat images to <ModsDir>/AlkaSkin_Images -->
+
+    <PropertyGroup>
+
+      <ImagesSourceDir>$(MSBuildProjectDirectory)\AlkaSkin_Images</ImagesSourceDir>
+
+      <ImagesDestDir>$(ModsDir)\AlkaSkin_Images</ImagesDestDir>
+
+    </PropertyGroup>
+
+    <MakeDir Directories="$(ImagesDestDir)" Condition="!Exists('$(ImagesDestDir)')" />
+
+    <ItemGroup>
+
+      <HatImageFiles Include="$(ImagesSourceDir)\*.png" />
+
+    </ItemGroup>
+
+    <Copy SourceFiles="@(HatImageFiles)" DestinationFolder="$(ImagesDestDir)" SkipUnchangedFiles="true" Condition="Exists('$(ImagesSourceDir)')" />
+
+    <Message Importance="high" Text="[Deploy] PNG hat images -&gt; $(ImagesDestDir)" />
+
+  </Target>
+
+</Project>
+
+
