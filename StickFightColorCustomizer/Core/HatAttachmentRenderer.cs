@@ -213,7 +213,11 @@ namespace StickFightColorCustomizer.Core
         private const float HatScaleMin = 0.9f;
         private const float HatScaleMax = 5.8f;
         private const int HatSortOrderBoost = 28;
-        private const float HatNudgeDownRadiusFactor = 0.01f;
+        // Bumped from 0.01 → 0.25 (per-head-radius) so all procedural hats (cap, beanie,
+        // tophat-procedural-look-alikes, cowboy, mario_cap, link_cap, ash_cap, etc.) sit
+        // visibly ON the head instead of hovering a few pixels above it. Helmets and image
+        // hats keep their own per-id nudge logic further below.
+        private const float HatNudgeDownRadiusFactor = 0.25f;
 
         private static void ApplyTransform(Transform hatTransform, HeadAttachPoint attach, string hatId)
         {

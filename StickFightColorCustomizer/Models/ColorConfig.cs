@@ -10,9 +10,12 @@ namespace StickFightColorCustomizer.Models
         public WingSettings Wing = new WingSettings();
         public ObjectSettings Object = new ObjectSettings();
         public WeaponColorSettings Weapon = new WeaponColorSettings();
+        public MiscSettings Misc = new MiscSettings();
 
-        /// <summary>Si false, no repinta cuerpo ni mantiene líneas hasta activar en menú.</summary>
-        public bool BodyCustomizationActive;
+        /// <summary>Si false, no repinta cuerpo ni mantiene líneas hasta activar en menú.
+        /// Default ahora TRUE para que los colores del jugador sean estables en lobby
+        /// (antes mostraba colores random vanilla cuando no estaba activado).</summary>
+        public bool BodyCustomizationActive = true;
 
         public bool AnimatedRgb;
         public float RgbSpeed = 1f;
@@ -40,6 +43,7 @@ namespace StickFightColorCustomizer.Models
                 Wing = Wing != null ? Wing.Clone() : new WingSettings(),
                 Object = Object != null ? Object.Clone() : new ObjectSettings(),
                 Weapon = Weapon != null ? Weapon.Clone() : new WeaponColorSettings(),
+                Misc = Misc != null ? Misc.Clone() : new MiscSettings(),
                 BodyCustomizationActive = BodyCustomizationActive,
                 AnimatedRgb = AnimatedRgb,
                 RgbSpeed = RgbSpeed,

@@ -1,0 +1,13 @@
+﻿ALKA REAL SKIN CHANGER - QUICK INSTALL (MELONLOADER 0.5.7)
+
+1) Cierra el juego.
+2) Extrae este .zip.
+3) Copia la carpeta "Mods" de este zip dentro de:
+   C:\Program Files (x86)\Steam\steamapps\common\StickFightTheGame\
+4) Si pregunta reemplazar, acepta.
+5) Abre el juego y presiona F6.
+
+IMPORTANTE:
+- Necesitas MelonLoader 0.5.7 (x86).
+- Este mod es visual, no da ventaja competitiva.
+- En multiplayer, otros ven tus cosméticos solo si también tienen el mod.

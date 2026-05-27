@@ -31,6 +31,7 @@ namespace StickFightColorCustomizer.Core
             { "tab_slots", "Slots" },
             { "tab_advanced", "Advanced" },
             { "tab_settings", "Settings" },
+            { "tab_misc", "Misc" },
             { "color_wheel", "Color wheel" },
             { "apply_now", "Apply now" },
             { "save", "Save" },
@@ -275,6 +276,7 @@ namespace StickFightColorCustomizer.Core
             { "tab_slots", "Slots" },
             { "tab_advanced", "Avanzado" },
             { "tab_settings", "Ajustes" },
+            { "tab_misc", "Misc" },
             { "color_wheel", "Rueda cromática" },
             { "apply_now", "Aplicar ahora" },
             { "save", "Guardar" },
@@ -631,7 +633,8 @@ namespace StickFightColorCustomizer.Core
                 T("tab_weapons"),
                 T("tab_slots"),
                 T("tab_advanced"),
-                T("tab_settings")
+                T("tab_settings"),
+                T("tab_misc")
             };
         }
 

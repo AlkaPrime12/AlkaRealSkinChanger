@@ -14,6 +14,7 @@ namespace StickFightColorCustomizer.Models
         public Color Wings = Color.white;
 
         public bool HalfColorEnabled;
+        public Color HeadDistal = Color.white;
         public Color SpineDistal = Color.white;
         public Color LegLeftDistal = Color.white;
         public Color LegRightDistal = Color.white;
@@ -53,7 +54,8 @@ namespace StickFightColorCustomizer.Models
 
         public bool SupportsHalfColor(StickColorPart part)
         {
-            return part == StickColorPart.Spine
+            return part == StickColorPart.Head
+                || part == StickColorPart.Spine
                 || part == StickColorPart.LegLeft
                 || part == StickColorPart.LegRight
                 || part == StickColorPart.HandLeft
@@ -64,6 +66,7 @@ namespace StickFightColorCustomizer.Models
         {
             switch (part)
             {
+                case StickColorPart.Head: return HeadDistal;
                 case StickColorPart.Spine: return SpineDistal;
                 case StickColorPart.LegLeft: return LegLeftDistal;
                 case StickColorPart.LegRight: return LegRightDistal;
@@ -77,6 +80,7 @@ namespace StickFightColorCustomizer.Models
         {
             switch (part)
             {
+                case StickColorPart.Head: HeadDistal = color; break;
                 case StickColorPart.Spine: SpineDistal = color; break;
                 case StickColorPart.LegLeft: LegLeftDistal = color; break;
                 case StickColorPart.LegRight: LegRightDistal = color; break;
@@ -106,6 +110,7 @@ namespace StickFightColorCustomizer.Models
                 Crown = Crown,
                 Wings = Wings,
                 HalfColorEnabled = HalfColorEnabled,
+                HeadDistal = HeadDistal,
                 SpineDistal = SpineDistal,
                 LegLeftDistal = LegLeftDistal,
                 LegRightDistal = LegRightDistal,

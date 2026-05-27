@@ -511,6 +511,51 @@ namespace StickFightColorCustomizer.Core
             return FindChildByName(root, rendererKey);
         }
 
+        /// <summary>
+        /// Repaints the head SpriteRenderer(s) each frame because vanilla code re-applies
+        /// the random lobby colour on its own SpriteRenderer.color every Update. Without
+        /// this, the head goes back to a random colour in lobby/respawn even when our
+        /// MaintainSetLineColor path keeps the line-based parts (spine/legs/hands) correct.
+        /// </summary>
+        public static void MaintainHeadColor(Controller controller, BodyColors colors, ColorConfig config)
+        {
+            if (controller == null || colors == null) return;
+
+            Color target = colors.Head;
+
+            HeadRenderer headRenderer = controller.GetComponentInChildren<HeadRenderer>(true);
+            if (headRenderer != null)
+            {
+                MaintainHeadSprites(headRenderer.transform, target);
+            }
+
+            Transform renderers = FindRenderersRoot(controller.transform);
+            if (renderers != null)
+            {
+                Transform headNode = FindChildByName(renderers, "headRenderer");
+                if (headNode != null && (headRenderer == null || headNode != headRenderer.transform))
+                {
+                    MaintainHeadSprites(headNode, target);
+                }
+            }
+        }
+
+        private static void MaintainHeadSprites(Transform node, Color target)
+        {
+            SpriteRenderer[] sprites = node.GetComponentsInChildren<SpriteRenderer>(true);
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                SpriteRenderer sr = sprites[i];
+                if (sr == null || IsModCosmeticObject(sr.gameObject)) continue;
+                // Only re-apply when the vanilla colour drifted (avoid material allocations
+                // every frame).
+                if (!ColorsMatch(sr.color, target))
+                {
+                    sr.color = target;
+                }
+            }
+        }
+
         private static bool ColorsMatch(Color a, Color b)
         {
             return Mathf.Abs(a.r - b.r) < 0.02f

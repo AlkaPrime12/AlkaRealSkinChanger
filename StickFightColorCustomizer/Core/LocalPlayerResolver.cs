@@ -56,7 +56,14 @@ namespace StickFightColorCustomizer.Core
                 return false;
             }
 
-            if (MatchmakingHandler.IsNetworkMatch)
+            // Strict mode for ANY multiplayer context (network match OR inside-lobby).
+            // We've seen IsNetworkMatch briefly flip false during late-join / map transition
+            // — that previously let HasControl / playerID-cache match a REMOTE controller,
+            // causing the local player's preset to leak onto the last vanilla peer. Treat
+            // an in-lobby state as network-mode too so the Steam-ID gate is always used.
+            bool inMpContext = MatchmakingHandler.IsNetworkMatch
+                || (MatchmakingHandler.Instance != null && MatchmakingHandler.Instance.IsInsideLobby);
+            if (inMpContext)
             {
                 return IsLocalPlayerInNetworkMatch(controller);
             }

@@ -120,6 +120,7 @@
     <Compile Include="Models\TopsSettings.cs" />
     <Compile Include="Models\ObjectSettings.cs" />
     <Compile Include="Models\WingSettings.cs" />
+    <Compile Include="Models\MiscSettings.cs" />
 
     <Compile Include="Models\WeaponColorSettings.cs" />
 
@@ -274,6 +275,8 @@
     <Compile Include="Core\PlayerFacingTracker.cs" />
 
     <Compile Include="Core\GlowStyleModulator.cs" />
+
+    <Compile Include="Core\MiscColorRotator.cs" />
 
     <Compile Include="Core\ModLog.cs" />
     <Compile Include="Hosting\ColorCustomizerApp.cs" />

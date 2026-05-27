@@ -44,7 +44,28 @@ namespace StickFightColorCustomizer.Core
             new TopsCatalogEntry { Id = "tx_racer",      Label = "Race Suit" },
             new TopsCatalogEntry { Id = "tx_priest",     Label = "Cleric Robe" },
             new TopsCatalogEntry { Id = "tx_chef",       Label = "Chef Apron" },
-            new TopsCatalogEntry { Id = "tx_diver",      Label = "Wetsuit" }
+            new TopsCatalogEntry { Id = "tx_diver",      Label = "Wetsuit" },
+            // ── 20 nuevos tops épicos (segunda tanda) ──
+            new TopsCatalogEntry { Id = "tx2_mech",       Label = "Mech Suit" },
+            new TopsCatalogEntry { Id = "tx2_crystal",    Label = "Crystal Armor" },
+            new TopsCatalogEntry { Id = "tx2_lightning",  Label = "Lightning Robe" },
+            new TopsCatalogEntry { Id = "tx2_tribal",     Label = "Tribal Paint" },
+            new TopsCatalogEntry { Id = "tx2_patchwork",  Label = "Patchwork Jacket" },
+            new TopsCatalogEntry { Id = "tx2_sweater",    Label = "Knit Sweater" },
+            new TopsCatalogEntry { Id = "tx2_dragon",     Label = "Dragon Scales" },
+            new TopsCatalogEntry { Id = "tx2_cyberpunk",  Label = "Cyberpunk Vest" },
+            new TopsCatalogEntry { Id = "tx2_robe",       Label = "Mystic Robe" },
+            new TopsCatalogEntry { Id = "tx2_football",   Label = "Football Jersey" },
+            new TopsCatalogEntry { Id = "tx2_basket",     Label = "Basketball Tank" },
+            new TopsCatalogEntry { Id = "tx2_hawaiian",   Label = "Hawaiian Shirt" },
+            new TopsCatalogEntry { Id = "tx2_plaid",      Label = "Plaid Flannel" },
+            new TopsCatalogEntry { Id = "tx2_pinstripe",  Label = "Pinstripe Suit" },
+            new TopsCatalogEntry { Id = "tx2_captain",    Label = "Pirate Captain" },
+            new TopsCatalogEntry { Id = "tx2_skulls",     Label = "Skulls Print" },
+            new TopsCatalogEntry { Id = "tx2_carbon",     Label = "Carbon Fiber" },
+            new TopsCatalogEntry { Id = "tx2_lab2",       Label = "Hazmat Suit" },
+            new TopsCatalogEntry { Id = "tx2_jet",        Label = "Jet Pilot" },
+            new TopsCatalogEntry { Id = "tx2_circuit",    Label = "Circuit Board" }
         };
 
         public static bool IsValid(string id)

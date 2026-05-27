@@ -48,7 +48,7 @@ namespace StickFightColorCustomizer.UI
         private readonly ColorPickerPanel _halvesPicker = new ColorPickerPanel();
         private readonly ColorPickerPanel _wingPicker = new ColorPickerPanel();
 
-        private readonly bool[] _tabInitialized = new bool[11];
+        private readonly bool[] _tabInitialized = new bool[12];
         private int _halfEditPart;
         private Vector2 _slotsScroll;
         private readonly System.Collections.Generic.Dictionary<int, string> _slotNameDraft =
@@ -386,6 +386,7 @@ namespace StickFightColorCustomizer.UI
                 case 8: DrawTabSlots(); break;
                 case 9: DrawTabAdvanced(); break;
                 case 10: DrawTabSettings(); break;
+                case 11: DrawTabMisc(); break;
             }
 
             if (!string.IsNullOrEmpty(_statusMessage))
@@ -1564,6 +1565,200 @@ namespace StickFightColorCustomizer.UI
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
+        }
+
+        // ─────────────────────────────────────────────────────────────────────────
+        //                              MISC TAB
+        //   Hosts the cross-cutting customisations that don't fit any single tab:
+        //   master toggle, body opacity, line width, auto-randomise, name tag, etc.
+        // ─────────────────────────────────────────────────────────────────────────
+        private void DrawTabMisc()
+        {
+            MiscSettings misc = _mod.Config.Misc;
+            if (misc == null) { misc = new MiscSettings(); _mod.Config.Misc = misc; }
+
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("✦  MISC — Hyper customisation  ✦", ColorMenuTheme.SectionHeader);
+            ColorMenuLayout.HintLabel("Cosas que no encajan en otros tabs. Solo afecta al jugador local.");
+
+            // ── Master cosmetics toggle ──
+            GUILayout.Space(6f);
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("Master Switch", ColorMenuTheme.Label);
+            bool master = GUILayout.Toggle(misc.MasterCosmeticsEnabled,
+                "Enable ALL cosmetics (body / hat / shoes / tops / objects / wings / glow)",
+                ColorMenuTheme.Toggle);
+            if (master != misc.MasterCosmeticsEnabled)
+            {
+                misc.MasterCosmeticsEnabled = master;
+                _mod.ApplyAll();
+                _statusMessage = master ? "Cosmetics ON" : "Cosmetics OFF";
+            }
+            GUILayout.EndVertical();
+
+            // ── Body Opacity ──
+            GUILayout.Space(6f);
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("Body Opacity (ghost mode)", ColorMenuTheme.Label);
+            float opacity = GUILayout.HorizontalSlider(misc.BodyOpacity, 0.10f, 1.00f,
+                ColorMenuTheme.HorizontalSlider, ColorMenuTheme.HorizontalSliderThumb);
+            if (Mathf.Abs(opacity - misc.BodyOpacity) > 0.005f)
+            {
+                misc.BodyOpacity = opacity;
+                _mod.ApplyBodyOnly();
+                _mod.ApplyGlowOnly();
+            }
+            GUILayout.Label("Alpha: " + misc.BodyOpacity.ToString("0.00"), ColorMenuTheme.LabelMuted);
+            GUILayout.EndVertical();
+
+            // ── Body Line Width ──
+            GUILayout.Space(6f);
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("Body Line Thickness", ColorMenuTheme.Label);
+            float lw = GUILayout.HorizontalSlider(misc.BodyLineWidth, 0.50f, 2.00f,
+                ColorMenuTheme.HorizontalSlider, ColorMenuTheme.HorizontalSliderThumb);
+            if (Mathf.Abs(lw - misc.BodyLineWidth) > 0.005f)
+            {
+                misc.BodyLineWidth = lw;
+                _mod.ApplyBodyOnly();
+            }
+            GUILayout.Label("×" + misc.BodyLineWidth.ToString("0.00")
+                + "  (visual only — no hit-box change)", ColorMenuTheme.LabelMuted);
+            GUILayout.EndVertical();
+
+            // ── Auto-actions ──
+            GUILayout.Space(6f);
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("Auto-actions", ColorMenuTheme.Label);
+
+            bool randRespawn = GUILayout.Toggle(misc.RandomColorsOnRespawn,
+                "Re-randomise body colours every respawn",
+                ColorMenuTheme.Toggle);
+            if (randRespawn != misc.RandomColorsOnRespawn) misc.RandomColorsOnRespawn = randRespawn;
+
+            bool rotate = GUILayout.Toggle(misc.RotateColorsContinuously,
+                "Party mode: rotate body colours continuously",
+                ColorMenuTheme.Toggle);
+            if (rotate != misc.RotateColorsContinuously) misc.RotateColorsContinuously = rotate;
+
+            if (misc.RotateColorsContinuously)
+            {
+                float interval = GUILayout.HorizontalSlider(misc.ColorRotateInterval, 0.5f, 15f,
+                    ColorMenuTheme.HorizontalSlider, ColorMenuTheme.HorizontalSliderThumb);
+                if (Mathf.Abs(interval - misc.ColorRotateInterval) > 0.05f)
+                    misc.ColorRotateInterval = interval;
+                GUILayout.Label("Every " + misc.ColorRotateInterval.ToString("0.0") + " s",
+                    ColorMenuTheme.LabelMuted);
+            }
+
+            bool spinBurst = GUILayout.Toggle(misc.SpawnSpinBurst,
+                "Spawn flair: brief cosmetic spin on respawn",
+                ColorMenuTheme.Toggle);
+            if (spinBurst != misc.SpawnSpinBurst) misc.SpawnSpinBurst = spinBurst;
+
+            GUILayout.Space(2f);
+            if (GUILayout.Button("🎲  Randomise body colours NOW", ColorMenuTheme.ButtonAccent))
+            {
+                RandomizeBodyColors();
+                _statusMessage = "Random colours rolled.";
+            }
+            GUILayout.EndVertical();
+
+            // ── Trail ──
+            GUILayout.Space(6f);
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("Movement Trail", ColorMenuTheme.Label);
+            bool trail = GUILayout.Toggle(misc.TrailEnabled,
+                "Leave a fading colour trail behind the player",
+                ColorMenuTheme.Toggle);
+            if (trail != misc.TrailEnabled) misc.TrailEnabled = trail;
+            if (trail)
+            {
+                ColorMenuLayout.HintLabel("Tip: keep it short — long trails draw a lot of geometry.");
+            }
+            GUILayout.EndVertical();
+
+            // ── Name tag ──
+            GUILayout.Space(6f);
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("Floating Name Tag", ColorMenuTheme.Label);
+            string newTag = GUILayout.TextField(misc.NameTag ?? "", 16);
+            if (newTag != misc.NameTag) misc.NameTag = newTag;
+            GUILayout.Label("Up to 16 chars. Empty = disabled.", ColorMenuTheme.LabelMuted);
+            GUILayout.EndVertical();
+
+            // ── Quick presets ──
+            GUILayout.Space(6f);
+            GUILayout.BeginVertical(ColorMenuTheme.Box);
+            GUILayout.Label("Quick Presets", ColorMenuTheme.Label);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("👻 Ghost",  ColorMenuTheme.Button)) { ApplyMiscPreset(misc, 0); _statusMessage = "Ghost preset."; }
+            if (GUILayout.Button("⚡ Hyper",  ColorMenuTheme.Button)) { ApplyMiscPreset(misc, 1); _statusMessage = "Hyper preset."; }
+            if (GUILayout.Button("🎉 Party",  ColorMenuTheme.Button)) { ApplyMiscPreset(misc, 2); _statusMessage = "Party preset."; }
+            if (GUILayout.Button("🪶 Minimal",ColorMenuTheme.Button)) { ApplyMiscPreset(misc, 3); _statusMessage = "Minimal preset."; }
+            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
+
+            GUILayout.EndVertical();
+        }
+
+        private void RandomizeBodyColors()
+        {
+            BodyColors b = _mod.Config.Colors;
+            if (b == null) return;
+            b.Head = RandColor();
+            b.Spine = RandColor();
+            b.LegLeft = RandColor();
+            b.LegRight = RandColor();
+            b.HandLeft = RandColor();
+            b.HandRight = RandColor();
+            _mod.ApplyBodyOnly();
+        }
+
+        private static Color RandColor()
+        {
+            float h = Random.value;
+            float s = 0.7f + Random.value * 0.3f;
+            float v = 0.7f + Random.value * 0.3f;
+            return Color.HSVToRGB(h, s, v);
+        }
+
+        private void ApplyMiscPreset(MiscSettings misc, int preset)
+        {
+            switch (preset)
+            {
+                case 0: // Ghost
+                    misc.BodyOpacity = 0.35f;
+                    misc.BodyLineWidth = 0.8f;
+                    misc.RotateColorsContinuously = false;
+                    misc.TrailEnabled = true;
+                    break;
+                case 1: // Hyper
+                    misc.BodyOpacity = 1f;
+                    misc.BodyLineWidth = 1.4f;
+                    misc.RotateColorsContinuously = true;
+                    misc.ColorRotateInterval = 1.5f;
+                    misc.SpawnSpinBurst = true;
+                    break;
+                case 2: // Party
+                    misc.BodyOpacity = 1f;
+                    misc.BodyLineWidth = 1.0f;
+                    misc.RotateColorsContinuously = true;
+                    misc.ColorRotateInterval = 3.0f;
+                    misc.RandomColorsOnRespawn = true;
+                    misc.SpawnSpinBurst = true;
+                    break;
+                case 3: // Minimal
+                    misc.BodyOpacity = 1f;
+                    misc.BodyLineWidth = 1.0f;
+                    misc.RotateColorsContinuously = false;
+                    misc.RandomColorsOnRespawn = false;
+                    misc.TrailEnabled = false;
+                    misc.SpawnSpinBurst = false;
+                    misc.NameTag = "";
+                    break;
+            }
+            _mod.ApplyAll();
         }
 
         private void DrawTabSettings()

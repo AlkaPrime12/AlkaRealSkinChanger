@@ -94,6 +94,16 @@ namespace StickFightColorCustomizer.Patches
                 return;
             }
 
+            // Master kill-switch from the Misc tab. Skipping early here is the cheapest
+            // place to disable EVERYTHING — no per-frame work runs.
+            if (config.Misc != null && !config.Misc.MasterCosmeticsEnabled)
+            {
+                return;
+            }
+
+            // Tick the colour rotator (Misc → Party mode). No-op when disabled.
+            MiscColorRotator.Tick();
+
             bool lobbyMenu = LobbyPerformance.IsLobbyMenuOnly();
             GlowSettings glow = config.Glow;
             bool needGlow = glow != null && glow.Enabled && (!lobbyMenu || glow.MaintainInLobby);
@@ -139,6 +149,18 @@ namespace StickFightColorCustomizer.Patches
             if (needBody)
             {
                 PlayerColorApplier.MaintainSetLineColor(setLine, config.Colors, config);
+
+                // Head is a SpriteRenderer (not a LineRenderer) and vanilla overwrites its
+                // colour every frame (the random lobby skin). Repaint once per frame when
+                // the spineRenderer line fires — cheap and avoids the head looking random.
+                if (string.Equals(boneName, "spineRenderer", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    Controller ctrl = setLine.transform.root.GetComponent<Controller>();
+                    if (ctrl != null && LocalPlayerResolver.IsLocalController(ctrl))
+                    {
+                        PlayerColorApplier.MaintainHeadColor(ctrl, config.Colors, config);
+                    }
+                }
             }
 
             if (needTops)

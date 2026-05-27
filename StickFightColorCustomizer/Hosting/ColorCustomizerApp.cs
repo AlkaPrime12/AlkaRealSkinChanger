@@ -252,6 +252,19 @@ namespace StickFightColorCustomizer.Hosting
             ApplyBodyOnly(clearThrottle: true);
         }
 
+        /// <summary>Re-applies every cosmetic in one shot (used by the Misc tab master switch
+        /// and preset buttons). Cheap because each Apply* is idempotent / cached.</summary>
+        public void ApplyAll()
+        {
+            ApplyBodyOnly();
+            ApplyGlowOnly();
+            ApplyHatOnly();
+            ApplyShoeOnly();
+            ApplyTopsOnly();
+            ApplyWingOnly();
+            ApplyWeaponOnly();
+        }
+
         /// <summary>Para RGB animado: clearThrottle=false evita anular el throttle por línea.</summary>
         private void ApplyBodyOnly(bool clearThrottle)
         {

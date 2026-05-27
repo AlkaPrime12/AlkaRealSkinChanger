@@ -53,16 +53,24 @@ namespace StickFightColorCustomizer.Core
         // > 1 make the helmet sprite a bit larger than the head so it fully encases it.
         public static readonly ImageHatDef[] Defs =
         {
+            // Caps (gorras): the source PNGs all have ~15-25 % transparent padding below the
+            // visible brim. With pivotY = 0 the SpriteRenderer anchors at that bottom edge,
+            // so the empty padding sits on the head and the cap looks like it's floating
+            // a few pixels above. Bumping pivotY to ~0.25 hides the padding inside the head
+            // — the cap visually touches the scalp.
             new ImageHatDef("img_mario",       "Mario Cap (HD)",        "Gorra de mario",
-                widthFactor: 1.20f, heightFactor: 1.10f, pivotY: 0.05f),
+                widthFactor: 1.20f, heightFactor: 1.10f, pivotY: 0.25f),
+            // Luigi PNG has noticeably more transparent padding below the brim than the
+            // Mario one — needs a higher pivotY to sit on the head. Bumped size up
+            // slightly so it visually matches the other caps after the pivot shift.
             new ImageHatDef("img_luigi",       "Luigi Cap (HD)",        "Gorra de luigi",
-                widthFactor: 1.20f, heightFactor: 1.10f, pivotY: 0.05f),
+                widthFactor: 1.40f, heightFactor: 1.28f, pivotY: 0.32f),
             new ImageHatDef("img_link",        "Link Cap (HD)",         "Gorra de Link",
-                widthFactor: 1.18f, heightFactor: 1.18f, pivotY: 0.05f),
+                widthFactor: 1.18f, heightFactor: 1.18f, pivotY: 0.22f),
             new ImageHatDef("img_ash",         "Ash Cap (HD)",          "Gorra de Ash",
-                widthFactor: 1.22f, heightFactor: 1.10f, pivotY: 0.05f),
+                widthFactor: 1.22f, heightFactor: 1.10f, pivotY: 0.25f),
             new ImageHatDef("img_bison",       "M. Bison Cap (HD)",     "M Bison Gorra",
-                widthFactor: 1.22f, heightFactor: 1.15f, pivotY: 0.10f),
+                widthFactor: 1.22f, heightFactor: 1.15f, pivotY: 0.28f),
             // Cascos / hood: pivotY alto + bajada extra en HatAttachmentRenderer → tapa la cara.
             new ImageHatDef("img_wizard",      "Wizard Hood (HD)",      "Cabeza de mago",
                 widthFactor: 2.05f, heightFactor: 2.05f, pivotY: 0.78f),

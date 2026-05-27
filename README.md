@@ -41,6 +41,17 @@ This project is **not affiliated with, endorsed by, or sponsored by** [Landfall 
 
 ## Installation (players)
 
+### Quick install (zip)
+
+1. Download `release/AlkaSkin-Mods-Only.zip`.
+2. Extract it.
+3. Copy the included `Mods` folder into your game root:
+   - `C:\Program Files (x86)\Steam\steamapps\common\StickFightTheGame\`
+4. Accept replace if Windows asks.
+5. Launch game and press `F6`.
+
+Required: MelonLoader `0.5.7` (x86).
+
 ### MelonLoader (recommended)
 
 1. Install [**MelonLoader 0.5.7**](https://melonwiki.xyz/) on Stick Fight (**x86 / 32-bit** — do **not** use 0.6+ on Unity 5.6).
