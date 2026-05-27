@@ -69,39 +69,44 @@ Full lobby preview
 
 ## Installation (players)
 
-### Download Here
+### Download Here (direct DLL — no ZIP)
 
-- [MelonLoader version (ZIP)](release/AlkaSkin-MelonLoader.zip)
-- [BepInEx version (ZIP)](release/AlkaSkin-BepInEx.zip)
+**MelonLoader version**
 
-Pick only one loader build for your game install.
+- [**Download `AlkaRealSkinChanger.dll`**](release/MelonLoader/AlkaRealSkinChanger.dll) ← right-click → Save As
+- Optional HD hats folder: [`release/MelonLoader/AlkaSkin_Images/`](release/MelonLoader/AlkaSkin_Images/)
 
-### Quick install (zip)
+**BepInEx version**
 
-1. Download `release/AlkaSkin-Mods-Only.zip`.
-2. Extract it.
-3. Copy the included `Mods` folder into your game root:
-   - `C:\Program Files (x86)\Steam\steamapps\common\StickFightTheGame\`
-4. Accept replace if Windows asks.
-5. Launch game and press `F6`.
+- [**Download `AlkaSkin.dll`**](release/BepInEx/AlkaSkin.dll) ← right-click → Save As
+- Optional HD hats folder: [`release/BepInEx/AlkaSkin_Images/`](release/BepInEx/AlkaSkin_Images/)
 
-Required: MelonLoader `0.5.7` (x86).
+Pick **only one** loader. Do **not** use ZIP (wrong folder = `0 Mods loaded`).
 
 ### MelonLoader (recommended)
 
 1. Install [**MelonLoader 0.5.7**](https://melonwiki.xyz/) on Stick Fight (**x86 / 32-bit** — do **not** use 0.6+ on Unity 5.6).
 2. Close the game.
-3. Copy into `StickFightTheGame/Mods/`:
-   - `AlkaRealSkinChanger.dll` (from [Releases](https://github.com/AlkaPrime12/AlkaRealSkinChanger/releases) or your build)
-   - optional folder `AlkaSkin_Images/` (HD hat PNGs — see below)
-4. Launch the game → console should show **`1 Mods loaded`** (or more if you use other mods).
-5. Press **F6** in lobby or match.
+3. Download **`AlkaRealSkinChanger.dll`** from the link above.
+4. Paste it **directly** into:
+   - `StickFightTheGame/Mods/AlkaRealSkinChanger.dll`
+5. Optional: copy folder `AlkaSkin_Images` into the same `Mods/` folder.
+6. Launch the game → console should show **`1 Mods loaded`**.
+7. Press **F6** in lobby or match.
 
-**Common mistake:** putting the DLL inside a nested folder (`Mods/Mods/...` or `Mods/AlkaSkin-Compartir/Mods/...`) → MelonLoader reports **`0 Mods loaded`**. The `.dll` must sit **directly** in `Mods/`.
+**Common mistake:** nested paths like `Mods/Mods/...` or extracting a ZIP into the wrong place → **`0 Mods loaded`**.
 
 ### BepInEx
 
-See [`StickFightColorCustomizer/README-BEPINEX.md`](StickFightColorCustomizer/README-BEPINEX.md) and [`INSTALL-LOADERS.md`](StickFightColorCustomizer/INSTALL-LOADERS.md).
+1. Install **BepInEx 5.4.x** (x86). See [`StickFightColorCustomizer/README-BEPINEX.md`](StickFightColorCustomizer/README-BEPINEX.md).
+2. Close the game.
+3. Download **`AlkaSkin.dll`** from the link above.
+4. Paste into:
+   - `StickFightTheGame/BepInEx/plugins/AlkaSkin/AlkaSkin.dll`
+5. Optional: copy `AlkaSkin_Images` into `BepInEx/plugins/AlkaSkin/`.
+6. Press **F6** in game.
+
+Do **not** run MelonLoader and BepInEx on the same install.
 
 ### HD hat images (optional)
 

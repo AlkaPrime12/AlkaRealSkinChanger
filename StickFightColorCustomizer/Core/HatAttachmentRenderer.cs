@@ -279,6 +279,11 @@ namespace StickFightColorCustomizer.Core
                 pos.y -= attach.HeadRadius * HatNudgeDownRadiusFactor;
             }
 
+            if (hatId == "toad_cap")
+            {
+                pos.y -= attach.HeadRadius * 0.14f;
+            }
+
             if (HatImageLoader.IsImageHat(hatId))
             {
                 HatImageLoader.ImageHatDef imgDef = HatImageLoader.GetDef(hatId);

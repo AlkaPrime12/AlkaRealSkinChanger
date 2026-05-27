@@ -9,7 +9,7 @@ namespace StickFightColorCustomizer.Core
     /// </summary>
     public static class HatSpriteFactory
     {
-        private const int ArtGeneration = 11;
+        private const int ArtGeneration = 12;
         private static readonly Dictionary<string, Sprite> Cache = new Dictionary<string, Sprite>();
 
         public static void ClearCache()
@@ -174,6 +174,11 @@ namespace StickFightColorCustomizer.Core
             if (hatId == "dunce")
             {
                 return 0.3f;
+            }
+
+            if (hatId == "toad_cap")
+            {
+                return 0.04f;
             }
 
             if (kind == HatAttachKind.Top)
@@ -633,7 +638,8 @@ namespace StickFightColorCustomizer.Core
             const int w = 38, h = 26;
             Texture2D tex = NewTex(w, h);
             float midX = w / 2f;
-            // Borde inferior (banda de la cabeza)
+            // Borde inferior (banda que apoya en la cabeza — pivot en y≈0)
+            FillRect(tex, 5, 0, w - 6, 2, new Color(0.72f, 0.7f, 0.72f, 1f));
             FillRect(tex, 6, 2, w - 7, 5, new Color(0.8f, 0.78f, 0.78f, 1f));
             FillRect(tex, 7, 4, w - 8, 5, White);
             // Cúpula gigante tipo hongo
@@ -647,8 +653,8 @@ namespace StickFightColorCustomizer.Core
             FillEllipse(tex, midX + 10, 13, 3.5f, 3.5f, RedLo);
             FillEllipse(tex, midX + 10, 13, 2.5f, 2.5f, RedHi);
             DrawEllipseOutline(tex, midX, 14, 17f, 11f);
-            DrawOutline(tex, 6, 2, w - 7, 5);
-            return Finish(tex, w, h, new Vector2(0.5f, 0.08f));
+            DrawOutline(tex, 5, 0, w - 6, 5);
+            return Finish(tex, w, h, new Vector2(0.5f, 0.03f));
         }
 
         /// <summary>Gorro de chef clásico: pliegues, volumen y brillo.</summary>

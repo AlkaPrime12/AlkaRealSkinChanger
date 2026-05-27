@@ -1,0 +1,9 @@
+﻿BEPINEX - INSTALACION (SIN ZIP)
+
+1) Instala BepInEx 5.4.x (x86).
+2) Descarga AlkaSkin.dll (link directo del README).
+3) Pegalo en:
+   StickFightTheGame\BepInEx\plugins\AlkaSkin\AlkaSkin.dll
+4) Opcional: copia AlkaSkin_Images dentro de plugins\AlkaSkin\
+5) No uses MelonLoader y BepInEx a la vez.
+6) Abre el juego y presiona F6.

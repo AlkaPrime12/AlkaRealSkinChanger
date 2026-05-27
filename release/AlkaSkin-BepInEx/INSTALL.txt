@@ -1,9 +1,0 @@
-﻿ALKA REAL SKIN CHANGER - BEPINEX VERSION
-
-1) Install BepInEx 5.4.x (x86, Mono).
-2) Close game.
-3) Copy this zip's BepInEx folder into StickFightTheGame root folder.
-4) Replace files if asked.
-5) Open game and press F6.
-
-Do not use MelonLoader and BepInEx together in the same install.

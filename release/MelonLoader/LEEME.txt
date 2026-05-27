@@ -1,0 +1,9 @@
+﻿MELONLOADER - INSTALACION (SIN ZIP)
+
+1) Instala MelonLoader 0.5.7 (x86).
+2) Descarga AlkaRealSkinChanger.dll (link directo del README).
+3) Pegalo DIRECTO en:
+   StickFightTheGame\Mods\AlkaRealSkinChanger.dll
+   (no dentro de otra carpeta Mods)
+4) Opcional: copia la carpeta AlkaSkin_Images al mismo Mods\
+5) Abre el juego y presiona F6.
