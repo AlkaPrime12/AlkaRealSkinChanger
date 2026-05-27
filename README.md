@@ -41,6 +41,13 @@ This project is **not affiliated with, endorsed by, or sponsored by** [Landfall 
 
 ## Installation (players)
 
+### Download Here
+
+- [MelonLoader version (ZIP)](release/AlkaSkin-MelonLoader.zip)
+- [BepInEx version (ZIP)](release/AlkaSkin-BepInEx.zip)
+
+Pick only one loader build for your game install.
+
 ### Quick install (zip)
 
 1. Download `release/AlkaSkin-Mods-Only.zip`.

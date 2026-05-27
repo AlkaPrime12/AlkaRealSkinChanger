@@ -1,0 +1,7 @@
+﻿ALKA REAL SKIN CHANGER - MELONLOADER VERSION
+
+1) Install MelonLoader 0.5.7 (x86).
+2) Close game.
+3) Copy this zip's Mods folder into StickFightTheGame root folder.
+4) Replace files if asked.
+5) Open game and press F6.

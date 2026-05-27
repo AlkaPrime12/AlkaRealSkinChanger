@@ -10,6 +10,13 @@ Misma funcionalidad y protocolo **SFCC** (`sfcc`, `sfcc_ok`, ping P2P) que la ve
 
 ## Instalación BepInEx en Stick Fight
 
+### Descarga directa (build lista)
+
+- ZIP BepInEx listo para usar: [`../release/AlkaSkin-BepInEx.zip`](../release/AlkaSkin-BepInEx.zip)
+- ZIP MelonLoader (alternativa): [`../release/AlkaSkin-MelonLoader.zip`](../release/AlkaSkin-MelonLoader.zip)
+
+Elige solo uno según tu loader.
+
 1. Descarga **BepInEx 5.4.x** para Unity Mono / x86.
 2. Extrae en `Stick Fight The Game\` (debe existir `BepInEx\core\BepInEx.dll`).
 3. Ejecuta el juego una vez para generar carpetas.
