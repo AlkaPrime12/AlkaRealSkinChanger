@@ -1,12 +1,21 @@
-# Downloads (no ZIP)
+# Downloads
 
-Use **direct DLL** links from the main [README](../README.md).
+## ZIP (easiest)
 
-| Loader | File | Paste into |
-|--------|------|------------|
-| MelonLoader 0.5.7 | `MelonLoader/AlkaRealSkinChanger.dll` | `StickFightTheGame/Mods/` |
-| BepInEx 5.4.x | `BepInEx/AlkaSkin.dll` | `StickFightTheGame/BepInEx/plugins/AlkaSkin/` |
+| Loader | File | Extract into |
+|--------|------|----------------|
+| MelonLoader 0.5.7 | [`AlkaSkin-MelonLoader.zip`](AlkaSkin-MelonLoader.zip) | `StickFightTheGame\` (game root) |
+| BepInEx 5.4.x | [`AlkaSkin-BepInEx.zip`](AlkaSkin-BepInEx.zip) | `StickFightTheGame\` (game root) |
 
-Optional: copy `AlkaSkin_Images/` next to the DLL (same folder rules as above).
+Each ZIP includes the DLL + `AlkaSkin_Images` folder with the correct paths inside.
 
-**Do not use ZIP** — many users end up with `Mods/Mods/...` and MelonLoader shows `0 Mods loaded`.
+**Do not** extract inside `Mods\Mods\` or you will get `0 Mods loaded`.
+
+## Direct DLL (manual)
+
+| Loader | File |
+|--------|------|
+| MelonLoader | [`MelonLoader/AlkaRealSkinChanger.dll`](MelonLoader/AlkaRealSkinChanger.dll) |
+| BepInEx | [`BepInEx/AlkaSkin.dll`](BepInEx/AlkaSkin.dll) |
+
+Optional images: `MelonLoader/AlkaSkin_Images/` or `BepInEx/AlkaSkin_Images/`.
