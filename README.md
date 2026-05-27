@@ -39,6 +39,34 @@ This project is **not affiliated with, endorsed by, or sponsored by** [Landfall 
 
 ---
 
+## Showcase
+
+Body editor  
+![Body editor](docs/showcase/01-body.png)
+
+Glow styles  
+![Glow styles](docs/showcase/02-glow.png)
+
+Hats catalog  
+![Hats catalog](docs/showcase/03-hats.png)
+
+Objects catalog  
+![Objects catalog](docs/showcase/04-objects.png)
+
+Tops catalog  
+![Tops catalog](docs/showcase/05-tops.png)
+
+Full lobby preview  
+![Full lobby preview](docs/showcase/06-overview-final.png)
+
+---
+
+## Search Tags (ES/EN/RU/ZH)
+
+`stick fight mod`, `stickfight skin changer`, `melonloader 0.5.7`, `bepinex 5`, `multiplayer cosmetic mod`, `alka skin changer`, `mod de skins stick fight`, `personalizador stick fight`, `скин мод stick fight`, `мод кастомизации stick fight`, `火柴人格斗 模组`, `皮肤自定义 模组`
+
+---
+
 ## Installation (players)
 
 ### Download Here
